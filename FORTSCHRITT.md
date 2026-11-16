@@ -3,9 +3,9 @@
 > **Für Claude:** Lies diese Datei zu Beginn jeder Sitzung. Setze beim nächsten offenen Schritt an. Aktualisiere sie am Ende jeder Sitzung (Checkboxen, „Aktueller Stand“, Lernjournal) und committe sie.
 
 ## Aktueller Stand
-- **Aktuelles Modul:** 2 – Git & GitHub (Modul 1 abgeschlossen)
-- **Nächster Schritt:** Modul 2 beginnen: Konzepte erklären (Repository, Commit, Branch, PR), dann `git init`, erster Commit und `gh repo create`
-- **Offene Entscheidungen:** Basismessung für den Zielwert 80 % (vier Wochen Aufgaben notieren?), Bestätigung bei verspäteter Bestätigung, PIN-Login für Kinder. (Die Begründung für React kommt in Modul 2 ins ADR 0001.)
+- **Aktuelles Modul:** 3 – Agent-Grundausstattung (Modul 2 abgeschlossen)
+- **Nächster Schritt:** Modul 3 beginnen: CLAUDE.md ausbauen, dann die vier Hooks (SessionStart, PreToolUse, PostToolUse, Stop), `docs/coding-regeln.md` und Linter. Zusätzlich in Modul 4 nachholen: Branch Protection um den CI-Check ergänzen.
+- **Offene Entscheidungen:** Basismessung für den Zielwert 80 % (vier Wochen Aufgaben notieren?), Bestätigung bei verspäteter Bestätigung, PIN-Login für Kinder.
 - **Blocker:** –
 
 ## Entscheidungen (Kurzfassung, Details in docs/adr/)
@@ -19,11 +19,12 @@
 | 2026-11-16 | MVP: kein vollständiger Kalender, nur Übersicht „Heute“ und „Diese Woche“. Punkte und Belohnungen **nicht** im MVP (Aufgaben: erledigt melden → Elternteil bestätigt). |
 | 2026-11-16 | Neuer Job 5 aufgenommen (Essensauswahl nach Vorlieben aller Teilnehmenden), als Hypothese ohne Beleg aus Interviews. **Nach dem MVP** (Folgeversion). |
 | 2026-11-16 | `intent/001` akzeptiert. Hauptmetrik: Anteil rechtzeitig erledigter Aufgaben, Ziel 80 % nach 3 Monaten. Frist ist Pflicht, keine Fristverschiebung im MVP (Messung später), Rolle Gast entfällt. Zugriff nur im Heim-WLAN. |
+| 2026-11-16 | Repo `monochromatze/familien-dashboard` öffentlich. Branch Protection auf `main`: PR Pflicht, gilt auch für Admins, kein Force-Push, kein Löschen, 0 Freigaben (Einzelperson). CI-Check kommt in Modul 4. ADR 0001 (Tech-Stack) akzeptiert. |
 
 ## Module
 - [x] **0 – Setup:** OrbStack · Node/npm · Java 21 · IntelliJ/VS Code · `gh auth login` · Output-Style „Explanatory“
 - [x] **1 – Discovery & Wettbewerb:** Interviews · Jobs-to-be-Done · Wettbewerbsanalyse (3 Fakten geprüft) · `intent/001` · North Star · MVP
-- [ ] **2 – Git & GitHub:** `git init` · Repo erstellt · Branch Protection · Issues · ADR 0001 · Merge-Konflikt geübt
+- [x] **2 – Git & GitHub:** `git init` · Repo erstellt · Branch Protection · Issues (#3–#7) · ADR 0001 · Merge-Konflikt geübt
 - [ ] **3 – Agent-Grundausstattung:** CLAUDE.md ausgebaut · Hooks (SessionStart, PreToolUse, PostToolUse, Stop), jeder absichtlich ausgelöst · `docs/coding-regeln.md` · Linter
 - [ ] **4 – Walking Skeleton:** `/api/health` mit Test · Dockerfile · compose.yml · CI grün
 - [ ] **5 – QA & Prod + CD:** Self-hosted Runner · `fd-qa` / `fd-prod` · Prod-Freigabe · Rollback geübt
@@ -59,3 +60,11 @@
 - Agent lag falsch: Bei OurHome hatte Claude „2022 zuletzt aktualisiert, vermutlich aufgegeben“ geschrieben, die Quelle war ein Konkurrent. Tatsächlich Update am 02.10.2026. Cozi-Preise und Skylight-Plus-Belohnungen stimmten.
 - Für Checkliste/CLAUDE.md: Behauptungen aus Konkurrenzseiten an der Primärquelle prüfen. Wettbewerbs-Lücken (EU-Datenschutz pro Anbieter, App-Store-Bewertungsmuster) sind nicht recherchiert.
 - Entscheidungen: Frist Pflicht, keine Fristverschiebung im MVP, kein Gast, keine Punkte, nur „Heute/Diese Woche“, Essen/Rezepte (Job 5) nach dem MVP. `docs/vision.md` bewusst nicht genutzt (Entwurf liegt noch im Ordner).
+
+### 2026-11-16 – Modul 2 Git & GitHub
+- Gelernt: Ablauf **Branch → Commit → Push → PR → Merge → Pull**. Lokal und GitHub sind zwei Kopien: Ein Merge über `gh` ändert zuerst nur GitHub.
+- Gelernt: Branch Protection ist das Schloss, CLAUDE.md nur ein Hinweis. Der Test-Push auf `main` wurde mit `GH006` abgelehnt. Die CI-Pflicht fehlt noch, weil es noch keine CI gibt (Modul 4).
+- Gelernt: Löschen entfernt eine Datei nur aus dem aktuellen Stand, nicht aus dem Verlauf (`docs/vision.md` ist im öffentlichen Verlauf noch lesbar, harmlos). Bei Geheimnissen müsste man das Geheimnis ändern.
+- Gelernt: Ein Merge-Konflikt entsteht bei verschiedenen Änderungen an derselben Zeile. Die Markierungen `<<<<<<<`, `=======`, `>>>>>>>` entfernen, `git add`, `git commit`. Git öffnet dabei `vi`: `Esc`, dann `:wq` (oder `:q!` zum Abbrechen).
+- Hinweis: Die E-Mail-Adresse im Commit-Verlauf eines öffentlichen Repos ist für alle sichtbar. Dafür gibt es die GitHub-noreply-Adresse.
+- Für CLAUDE.md/Checkliste: Neue `.gitignore` vor dem ersten Commit anlegen (`.env*` ausschließen), weil das Repo öffentlich ist.
