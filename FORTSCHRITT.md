@@ -3,8 +3,8 @@
 > **Für Claude:** Lies diese Datei zu Beginn jeder Sitzung. Setze beim nächsten offenen Schritt an. Aktualisiere sie am Ende jeder Sitzung (Checkboxen, „Aktueller Stand“, Lernjournal) und committe sie.
 
 ## Aktueller Stand
-- **Aktuelles Modul:** 3 – Agent-Grundausstattung (Modul 2 abgeschlossen)
-- **Nächster Schritt:** Modul 3 beginnen: CLAUDE.md ausbauen, dann die vier Hooks (SessionStart, PreToolUse, PostToolUse, Stop), `docs/coding-regeln.md` und Linter. Zusätzlich in Modul 4 nachholen: Branch Protection um den CI-Check ergänzen.
+- **Aktuelles Modul:** 3 – Agent-Grundausstattung (fast fertig, Linter-Konfiguration offen)
+- **Nächster Schritt:** PR für `feat/modul-3-agent-leitplanken` mergen. In neuer Sitzung prüfen, ob der SessionStart-Hook den Stand anzeigt, und Migrations-Hook live testen. Dann Modul 4. Dort nachholen: Linter-Konfiguration (ktlint, detekt, Prettier, ESLint), PostToolUse- und Stop-Hook mit echtem Code testen, Branch Protection um den CI-Check ergänzen.
 - **Offene Entscheidungen:** Basismessung für den Zielwert 80 % (vier Wochen Aufgaben notieren?), Bestätigung bei verspäteter Bestätigung, PIN-Login für Kinder.
 - **Blocker:** –
 
@@ -25,7 +25,7 @@
 - [x] **0 – Setup:** OrbStack · Node/npm · Java 21 · IntelliJ/VS Code · `gh auth login` · Output-Style „Explanatory“
 - [x] **1 – Discovery & Wettbewerb:** Interviews · Jobs-to-be-Done · Wettbewerbsanalyse (3 Fakten geprüft) · `intent/001` · North Star · MVP
 - [x] **2 – Git & GitHub:** `git init` · Repo erstellt · Branch Protection · Issues (#3–#7) · ADR 0001 · Merge-Konflikt geübt
-- [ ] **3 – Agent-Grundausstattung:** CLAUDE.md ausgebaut · Hooks (SessionStart, PreToolUse, PostToolUse, Stop), jeder absichtlich ausgelöst · `docs/coding-regeln.md` · Linter
+- [~] **3 – Agent-Grundausstattung:** [x] CLAUDE.md ausgebaut · [~] Hooks (PreToolUse live ausgelöst; SessionStart, PostToolUse, Stop noch ohne Live-Beleg) · [x] `docs/coding-regeln.md` · [ ] Linter (kommt in Modul 4)
 - [ ] **4 – Walking Skeleton:** `/api/health` mit Test · Dockerfile · compose.yml · CI grün
 - [ ] **5 – QA & Prod + CD:** Self-hosted Runner · `fd-qa` / `fd-prod` · Prod-Freigabe · Rollback geübt
 - [ ] **6 – DDD:** Event Storming · Glossar · Kontext-Karte · `specs/001` reviewt
@@ -68,3 +68,9 @@
 - Gelernt: Ein Merge-Konflikt entsteht bei verschiedenen Änderungen an derselben Zeile. Die Markierungen `<<<<<<<`, `=======`, `>>>>>>>` entfernen, `git add`, `git commit`. Git öffnet dabei `vi`: `Esc`, dann `:wq` (oder `:q!` zum Abbrechen).
 - Hinweis: Die E-Mail-Adresse im Commit-Verlauf eines öffentlichen Repos ist für alle sichtbar. Dafür gibt es die GitHub-noreply-Adresse.
 - Für CLAUDE.md/Checkliste: Neue `.gitignore` vor dem ersten Commit anlegen (`.env*` ausschließen), weil das Repo öffentlich ist.
+
+### 2026-11-16 – Modul 3 Agent-Grundausstattung
+- Gelernt: Ein Hook ist ein Skript, das Claude Code selbst startet. Exit 0 = weiter, Exit 2 = blockiert, stderr geht als Erklärung an den Agenten. So wird aus dem Hinweis in CLAUDE.md ein Schloss.
+- Gelernt: Der Stop-Hook braucht die Prüfung `stop_hook_active`, sonst droht eine Endlosschleife bei dauerhaft roten Tests.
+- Live blockiert: `cat .env` und `git push origin main`. Nur per Handtest geprüft: Migrations-Regel. PostToolUse und Stop überspringen ohne Code still, echter Test in Modul 4.
+- Für CLAUDE.md: Blockaden nie umgehen, `.env*` und bestehende Migrationen nicht ändern (bereits eingetragen).
