@@ -20,7 +20,11 @@ Kotlin + Spring Boot (Gradle) · TypeScript + React + Vite (npm) · PostgreSQL 1
 - TDD: zuerst ein fehlschlagender Test, dann der Code. Tests nie abschwächen, um grün zu werden.
 - DDD-Schichten: `domain/` ist frei von Spring und JPA. Begriffe aus `docs/glossar.md` verwenden.
 - Nie direkt auf `main` pushen. Immer über Branch und PR.
-- Coding-Regeln: `docs/coding-regeln.md` (wird in Modul 3 angelegt, Vorlage in `vorlagen/`).
+- Coding-Regeln: `docs/coding-regeln.md`. Jede Regel dort nennt, wer sie prüft.
+- Hooks in `.claude/hooks/` (Konfiguration `.claude/settings.json`) setzen Regeln deterministisch durch. Wird eine Aktion blockiert (Exit 2), den Hinweis befolgen, **nie umgehen** (kein Umweg über Bash, kein `--no-verify`). Bei Zweifel den Nutzer fragen.
+- `.env*` und bestehende Dateien in `db/migration/` nie ändern. Neue Migration statt Änderung.
+- Behauptungen aus Konkurrenz- oder Fremdquellen an der Primärquelle prüfen.
+- Neue `.gitignore`-Einträge vor dem ersten Commit, das Repo ist öffentlich.
 
 ## Befehle
 *(werden in Modul 4 ergänzt: Build, Test, Lint, Start)*
