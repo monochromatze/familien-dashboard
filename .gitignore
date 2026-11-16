@@ -1,0 +1,21 @@
+# macOS
+.DS_Store
+
+# Geheimnisse: nie in Git (Repo ist öffentlich!)
+.env
+.env.*
+!*.env.example
+
+# Build-Ausgaben und Abhängigkeiten (kommen ab Modul 4)
+node_modules/
+build/
+dist/
+.gradle/
+*.log
+
+# IDE
+.idea/
+.vscode/
+
+# Lokale Claude-Code-Einstellungen (persönlich, nicht fürs Team)
+.claude/settings.local.json
