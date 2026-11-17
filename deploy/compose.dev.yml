@@ -1,0 +1,8 @@
+# Nur für die Entwicklung auf dem eigenen Mac: macht die Datenbank für das lokal gestartete
+# Backend (./gradlew bootRun) erreichbar. Nur auf 127.0.0.1, also nicht im WLAN sichtbar.
+# QA und Prod nutzen diese Datei nicht.
+
+services:
+  db:
+    ports:
+      - "127.0.0.1:5432:5432"
