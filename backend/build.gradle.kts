@@ -63,6 +63,11 @@ tasks.check {
     dependsOn(integrationTest)
 }
 
+// Fester Dateiname, damit das Dockerfile das JAR ohne Versionsnummer findet.
+tasks.bootJar {
+    archiveFileName.set("app.jar")
+}
+
 detekt {
     buildUponDefaultConfig = true
 }
