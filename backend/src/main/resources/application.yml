@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: familien-dashboard
+  datasource:
+    # Zugangsdaten kommen nur aus Umgebungsvariablen (siehe deploy/dev.env.example), nie aus dem Repo.
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/familiendashboard}
+    username: ${DB_USER:familiendashboard}
+    password: ${DB_PASSWORD}
+    hikari:
+      # Kurzer Timeout, damit /api/health bei toter Datenbank schnell antwortet.
+      connection-timeout: 2000
