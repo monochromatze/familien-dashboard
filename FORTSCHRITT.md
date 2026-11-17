@@ -3,9 +3,9 @@
 > **Für Claude:** Lies diese Datei zu Beginn jeder Sitzung. Setze beim nächsten offenen Schritt an. Aktualisiere sie am Ende jeder Sitzung (Checkboxen, „Aktueller Stand“, Lernjournal) und committe sie.
 
 ## Aktueller Stand
-- **Aktuelles Modul:** 3 – Agent-Grundausstattung (fast fertig, Linter-Konfiguration offen)
-- **Nächster Schritt:** PR für `feat/modul-3-agent-leitplanken` mergen. In neuer Sitzung prüfen, ob der SessionStart-Hook den Stand anzeigt, und Migrations-Hook live testen. Dann Modul 4. Dort nachholen: Linter-Konfiguration (ktlint, detekt, Prettier, ESLint), PostToolUse- und Stop-Hook mit echtem Code testen, Branch Protection um den CI-Check ergänzen.
-- **Offene Entscheidungen:** Basismessung für den Zielwert 80 % (vier Wochen Aufgaben notieren?), Bestätigung bei verspäteter Bestätigung, PIN-Login für Kinder.
+- **Aktuelles Modul:** 4 – Walking Skeleton (fertig, sobald PR #16 gemergt ist). Danach Modul 5.
+- **Nächster Schritt:** PR #16 mergen. Dann Modul 5 (QA & Prod + CD): Self-hosted Runner, `fd-qa` / `fd-prod`, Image-Tag = Git-SHA, Prod-Freigabe, Rollback üben. Plan `P-002` schreiben und freigeben lassen, bevor Code entsteht.
+- **Offene Entscheidungen:** Basismessung für den Zielwert 80 % (vier Wochen Aufgaben notieren?), Bestätigung bei verspäteter Bestätigung, PIN-Login für Kinder. Technisch: detekt läuft als Alpha (`2.0.0-alpha.6`), GitHub Actions später per Commit-SHA statt Major-Tag pinnen.
 - **Blocker:** –
 
 ## Entscheidungen (Kurzfassung, Details in docs/adr/)
@@ -20,14 +20,17 @@
 | 2026-11-16 | Neuer Job 5 aufgenommen (Essensauswahl nach Vorlieben aller Teilnehmenden), als Hypothese ohne Beleg aus Interviews. **Nach dem MVP** (Folgeversion). |
 | 2026-11-16 | `intent/I-001` akzeptiert. Hauptmetrik: Anteil rechtzeitig erledigter Aufgaben, Ziel 80 % nach 3 Monaten. Frist ist Pflicht, keine Fristverschiebung im MVP (Messung später), Rolle Gast entfällt. Zugriff nur im Heim-WLAN. |
 | 2026-11-16 | Repo `monochromatze/familien-dashboard` öffentlich. Branch Protection auf `main`: PR Pflicht, gilt auch für Admins, kein Force-Push, kein Löschen, 0 Freigaben (Einzelperson). CI-Check kommt in Modul 4. ADR-0001 (Tech-Stack) akzeptiert. |
+| 2026-11-17 | Branch-Namen nennen die Phase: `intent/`, `spec/`, `plan/`, `adr/`, `feature/` (nicht `feat/`), `fix/`, `chore/`, `docs/` nur für sonstige Dokumentation. Commit-Nachrichten bleiben bei `feat:`, `docs:` usw. |
 | 2026-11-17 | Nummerierung mit Typ-Präfix, je Typ eigener Zähler: `I-001` (Intent), `S-001` (Spec), `P-001` (Plan), `ADR-0001`. Grund: gleiche Nummern bei Intent und Plan suggerierten ein Paar. Die Beziehung steht im Feld „Basiert auf“. |
+| 2026-11-17 | Walking Skeleton: TypeScript bleibt auf 6.0 und ESLint (statt TS 7/oxlint aus dem Vite-Template), weil `typescript-eslint` TS 7 noch nicht kann. detekt 2.0.0-alpha.6 mit Kotlin 2.4.10, weil der stabile detekt neue Kotlin-Versionen nicht kennt. Ein Image für alles (Multi-Stage), Spring liefert das Frontend aus. |
+| 2026-11-17 | Branch Protection auf `main` um die Pflicht-Checks Backend, Frontend und Docker ergänzt (erst nach dem ersten grünen CI-Lauf). Rest unverändert. |
 
 ## Module
 - [x] **0 – Setup:** OrbStack · Node/npm · Java 21 · IntelliJ/VS Code · `gh auth login` · Output-Style „Explanatory“
 - [x] **1 – Discovery & Wettbewerb:** Interviews · Jobs-to-be-Done · Wettbewerbsanalyse (3 Fakten geprüft) · `intent/I-001` · North Star · MVP
 - [x] **2 – Git & GitHub:** `git init` · Repo erstellt · Branch Protection · Issues (#3–#7) · ADR-0001 · Merge-Konflikt geübt
-- [~] **3 – Agent-Grundausstattung:** [x] CLAUDE.md ausgebaut · [~] Hooks (PreToolUse live ausgelöst; SessionStart, PostToolUse, Stop noch ohne Live-Beleg) · [x] `docs/coding-regeln.md` · [ ] Linter (kommt in Modul 4)
-- [ ] **4 – Walking Skeleton:** `/api/health` mit Test · Dockerfile · compose.yml · CI grün
+- [x] **3 – Agent-Grundausstattung:** CLAUDE.md ausgebaut · Hooks (PreToolUse, PostToolUse, Stop, SessionStart live belegt; Migrations-Hook nur per Handtest, echter Test ab Modul 9) · `docs/coding-regeln.md` · Linter (ktlint, detekt, ESLint, Prettier) konfiguriert
+- [x] **4 – Walking Skeleton:** `/api/health` mit Test · Postgres · React-Seite · Dockerfile · compose.yml · CI grün · Branch Protection mit Pflicht-Checks (Plan `P-001`, PR #13 bis #16)
 - [ ] **5 – QA & Prod + CD:** Self-hosted Runner · `fd-qa` / `fd-prod` · Prod-Freigabe · Rollback geübt
 - [ ] **6 – DDD:** Event Storming · Glossar · Kontext-Karte · `specs/S-001` reviewt
 - [ ] **7 – Code beurteilen:** Review-Checkliste angewendet · Fehler-PR (3 von 3 Fehlern gefunden?)
@@ -75,3 +78,10 @@
 - Gelernt: Der Stop-Hook braucht die Prüfung `stop_hook_active`, sonst droht eine Endlosschleife bei dauerhaft roten Tests.
 - Live blockiert: `cat .env` und `git push origin main`. Nur per Handtest geprüft: Migrations-Regel. PostToolUse und Stop überspringen ohne Code still, echter Test in Modul 4.
 - Für CLAUDE.md: Blockaden nie umgehen, `.env*` und bestehende Migrationen nicht ändern (bereits eingetragen).
+
+### 2026-11-17 – Modul 4 Walking Skeleton
+- Gelernt: Ein **Walking Skeleton** ist die dünnste durchgehende Scheibe durch alle Schichten, hier `/api/health` von der Datenbank bis zur React-Seite. **Port und Adapter:** `HealthService` kennt nur das Interface `DatabaseCheck`, der Adapter `JdbcDatabaseCheck` kam in PR B dazu, ohne dass Service oder Controller angefasst wurden.
+- Gelernt: **Zwei Teststufen**. `test` ist schnell (Stop-Hook), `integrationTest` startet echtes Postgres per Testcontainers (CI). **Multi-Stage-Dockerfile**: Bauwerkzeuge landen nicht im Endimage, läuft als Nicht-Root. `docker compose down` behält Daten, `down -v` löscht sie. Pflicht-Checks erst nach dem ersten grünen Lauf setzen.
+- Hooks live belegt: PostToolUse (ktlint, `!!`, `any`, Prettier-Auto-Format), Stop (roter Test blockiert das Fertigmelden), PreToolUse (ein Befehl mit `.env`-Pfaden wurde blockiert und nicht umgangen), SessionStart.
+- Agent lag falsch oder musste nachbessern: Der einfache `detekt`-Task sieht `!!` nicht, erst `detektMain`/`detektTest` mit Typauflösung. Kotlin-Version musste zu detekt passen. Das Vite-Template brachte TS 7 und oxlint mit, das passte nicht zu unseren Regeln. Ein Test, der nicht kompiliert, wird vom Hook beanstandet, deshalb zuerst ein Stub. PR-Titel von PR A mit `feature:` statt `feat:` (Branch-Präfix und Commit-Typ verwechselt).
+- Für CLAUDE.md: Abschnitt „Befehle“ und „Stolpersteine“ eingetragen. Noch offen: Migrations-Hook mit echter Migration (Modul 9), Actions per SHA pinnen, detekt-Alpha beobachten.
