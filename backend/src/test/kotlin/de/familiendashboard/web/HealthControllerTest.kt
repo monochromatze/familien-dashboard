@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Import
+import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 
@@ -41,7 +42,7 @@ class HealthControllerTest(
             .get("/api/health")
             .andExpect {
                 status { isOk() }
-                content { json("""{"status":"ok","db":"ok"}""", true) }
+                content { json("""{"status":"ok","db":"ok"}""", JsonCompareMode.STRICT) }
             }
     }
 
@@ -53,7 +54,7 @@ class HealthControllerTest(
             .get("/api/health")
             .andExpect {
                 status { isServiceUnavailable() }
-                content { json("""{"status":"degraded","db":"down"}""", true) }
+                content { json("""{"status":"degraded","db":"down"}""", JsonCompareMode.STRICT) }
             }
     }
 }
