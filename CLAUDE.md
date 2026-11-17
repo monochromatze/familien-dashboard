@@ -29,7 +29,29 @@ Kotlin + Spring Boot (Gradle) · TypeScript + React + Vite (npm) · PostgreSQL 1
 - Neue `.gitignore`-Einträge vor dem ersten Commit, das Repo ist öffentlich.
 
 ## Befehle
-*(werden in Modul 4 ergänzt: Build, Test, Lint, Start)*
+Alle Befehle laufen vom Hauptordner des Repos aus. Die Hooks und die CI nutzen dieselben.
+
+**Backend** (`cd backend`, Gradle Wrapper, JDK 21):
+- Lint (Format + Linter mit Typauflösung): `./gradlew ktlintCheck detekt`. Format automatisch korrigieren: `./gradlew ktlintFormat`
+- Schnelle Tests (Stop-Hook): `./gradlew test`
+- Integrationstests mit echtem Postgres (brauchen Docker): `./gradlew integrationTest`
+- Alles wie in der CI: `./gradlew ktlintCheck detekt test integrationTest`
+- Lokal starten (Datenbank muss laufen): `DB_PASSWORD=<aus deploy/dev.env> ./gradlew bootRun`
+
+**Frontend** (`cd frontend`, npm, Node 24):
+- `npm run lint` (ESLint) · `npm run format:check` / `npm run format` (Prettier) · `npx tsc -b` (Typen)
+- Tests: `npm test -- --run` (einmalig, ohne `--run` im Watch-Modus)
+- Entwicklungsserver: `npm run dev` (Port 5173, `/api` geht per Proxy an Port 8080) · Build: `npm run build`
+
+**Docker** (Hauptordner, Datei `deploy/dev.env` aus `deploy/dev.env.example` kopieren):
+- Alles starten (Image bauen): `docker compose --env-file deploy/dev.env -f deploy/compose.yml up -d --build --wait`, danach `http://localhost:8080`
+- Nur Datenbank für lokale Entwicklung: `docker compose --env-file deploy/dev.env -f deploy/compose.yml -f deploy/compose.dev.yml up -d db`
+- Stoppen, Daten bleiben: `docker compose -f deploy/compose.yml down` · Stoppen und Daten löschen: `... down -v`
+
+**Stolpersteine:**
+- Der einfache `detekt`-Task hängt an `detektMain`/`detektTest`, weil nur mit Typauflösung `!!` gefunden wird. detekt 2.0.0-alpha.6 verlangt genau Kotlin 2.4.10.
+- TypeScript bleibt auf 6.0.x, bis `typescript-eslint` Version 7 unterstützt. Neue Vite-Vorlagen bringen oxlint und TS 7 mit, beides bei Bedarf ersetzen.
+- Tests, die nicht kompilieren, beanstandet der Hook. Für „rot“ erst einen Stub anlegen, der kompiliert, aber das Falsche tut.
 
 ## Dinge, die Claude falsch macht
 *(ergänzen, sobald derselbe Fehler zweimal passiert)*
