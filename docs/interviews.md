@@ -168,4 +168,4 @@ Format: *Wenn [Situation], will ich [Ziel], damit [Ergebnis].*
 ### Grenzen dieser Stichprobe
 - Alle fünf stammen aus **einer Familie**. Sie widersprechen sich nicht, weil sie dieselben Ereignisse erzählen (Turnen, Spülmaschine, Hund). Das sind keine fünf unabhängigen Belege.
 - Es gibt keine Familie ohne Kinder im Haus, keine Patchwork-Familie, keine Großeltern. Die Fragen kamen aus der Vorlage und haben die Themen vorgegeben.
-- Für `intent/001` besser mindestens 1–2 Gespräche aus **einer anderen Familie** ergänzen.
+- Für `intent/I-001` besser mindestens 1–2 Gespräche aus **einer anderen Familie** ergänzen.

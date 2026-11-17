@@ -1,6 +1,6 @@
-# ADR NNNN: <Entscheidung>
+# ADR-NNNN: <Entscheidung>
 
-- **Datum:** <JJJJ-MM-TT> · **Status:** Vorgeschlagen | Akzeptiert | Ersetzt durch ADR XXXX
+- **Datum:** <JJJJ-MM-TT> · **Status:** Vorgeschlagen | Akzeptiert | Ersetzt durch ADR-XXXX
 
 ## Kontext
 Welche Situation und welche Kräfte (Anforderungen, Einschränkungen) gibt es?

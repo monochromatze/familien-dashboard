@@ -38,7 +38,7 @@ Product Discovery & Wettbewerbsanalyse · **Agent-Hooks** · **Linter & Coding-R
 |---|---|---|
 | Backend | **Kotlin + Spring Boot 3** | Der Standard bei Kotlin-Backends in Firmen, ideal für DDD. *Alternative:* Ktor (schlanker, seltener). |
 | Build & Pakete Backend | **Gradle** (Kotlin DSL) | Gradle ist für Kotlin, was npm für Node ist. |
-| Frontend | **React + TypeScript + Vite** | Am weitesten verbreitet, und Agenten erzeugen dafür den zuverlässigsten Code. **Entschieden am 2026-11-14.** Verworfen wurden Svelte (am leichtesten zu lesen) und Angular (mehr Struktur). Die Begründung kommt ins ADR 0001. |
+| Frontend | **React + TypeScript + Vite** | Am weitesten verbreitet, und Agenten erzeugen dafür den zuverlässigsten Code. **Entschieden am 2026-11-14.** Verworfen wurden Svelte (am leichtesten zu lesen) und Angular (mehr Struktur). Die Begründung kommt ins ADR-0001. |
 | Pakete Frontend | **npm** | Siehe unten |
 | Datenbank | **PostgreSQL 16** im Docker-Container | |
 | Migrationen | **Flyway** | Reine SQL-Dateien, gut lesbar |
@@ -86,7 +86,7 @@ Du machst nicht alles in einem Chat. Damit jeder neue Chat weiß, wo du stehst, 
 | # | Modul | SDLC-Stage | Lernziele | Ergebnis |
 |---|---|---|---|---|
 | 0 | Setup | – | – | Werkzeuge laufen |
-| 1 | Discovery & Wettbewerbsanalyse | **Plan** | PM | `intent/001`, Wettbewerbsanalyse |
+| 1 | Discovery & Wettbewerbsanalyse | **Plan** | PM | `intent/I-001`, Wettbewerbsanalyse |
 | 2 | Git & GitHub | – | 6 | Repo, Branch Protection, Issues |
 | 3 | **Agent-Grundausstattung: CLAUDE.md, Hooks, Coding-Regeln, Linter** | Build | 7, Hooks, Linter | Agent arbeitet mit Leitplanken |
 | 4 | Walking Skeleton: Docker, Postgres, CI | Build/Test | 1, 2, 5 | Grüne CI, App im Container |
@@ -137,10 +137,10 @@ Agentische PM-Arbeit: Der Agent recherchiert und strukturiert, du urteilst.
 2. **Wettbewerbsanalyse:** Claude recherchiert z. B. Cozi, FamilyWall, OurHome, Skylight, Google Family Link, Notion-Vorlagen und den echten Hauptkonkurrenten: Google-Kalender plus WhatsApp-Gruppe. Pro Anbieter: Zielgruppe, Jobs, Preismodell, Stärken und Schwächen, EU-Datenschutz, Muster in App-Store-Bewertungen. Dazu eine Positionierungs-Matrix und 3 Marktlücken.
    🔍 **Prüfe 3 Behauptungen selbst an der Quelle.** Notiere, wo der Agent falsch lag. Das ist die Kernfähigkeit im agentischen PM.
 3. **intent.md** nach Playbook: Du erzählst, Claude stellt Rückfragen und schreibt [Vorlage intent](vorlagen/intent.md). Du korrigierst.
-4. **North Star:** „Erledigte Aufgaben pro aktiver Familie und Woche“. **MVP (angepasst am 2026-11-16, siehe `intent/001`):** Familie, Einladungen, Rollen (Elternteil, Kind), Aufgaben mit Person und Pflicht-Frist (erledigt melden → Elternteil bestätigt), Einkaufsliste, Übersicht „Heute / Diese Woche“. **Kein** vollständiger Kalender, **keine** Punkte/Belohnungen, **keine** Rolle Gast, **keine** Fristverschiebung. Hauptmetrik: Anteil rechtzeitig erledigter Aufgaben (Ziel 80 %).
+4. **North Star:** „Erledigte Aufgaben pro aktiver Familie und Woche“. **MVP (angepasst am 2026-11-16, siehe `intent/I-001`):** Familie, Einladungen, Rollen (Elternteil, Kind), Aufgaben mit Person und Pflicht-Frist (erledigt melden → Elternteil bestätigt), Einkaufsliste, Übersicht „Heute / Diese Woche“. **Kein** vollständiger Kalender, **keine** Punkte/Belohnungen, **keine** Rolle Gast, **keine** Fristverschiebung. Hauptmetrik: Anteil rechtzeitig erledigter Aufgaben (Ziel 80 %).
    > Folgen für spätere Module: In Modul 6, 8, 10 und 12 entfallen Punkte (`Punktekonto`, `Punkte`, Testliste 4/7 mit Punkten, Rangliste) und die Rolle Gast. Beim Durcharbeiten dort anpassen.
 
-✅ `intent/001-familien-dashboard.md`, `docs/wettbewerb.md`, `docs/interviews.md`
+✅ `intent/I-001-familien-dashboard.md`, `docs/wettbewerb.md`, `docs/interviews.md`
 
 ---
 
@@ -157,7 +157,7 @@ git init -b main && git add . && git commit -m "docs: Kursplan, Vorlagen, Fortsc
 ```bash
 gh repo create familien-dashboard --public --source=. --push
 ```
-Danach in GitHub: **Branch Protection** für `main` (PR nötig, CI muss grün sein), Issues pro MVP-Feature, erstes **ADR** `docs/adr/0001-tech-stack.md` ([Vorlage](vorlagen/adr.md)).
+Danach in GitHub: **Branch Protection** für `main` (PR nötig, CI muss grün sein), Issues pro MVP-Feature, erstes **ADR** `docs/adr/ADR-0001-tech-stack.md` ([Vorlage](vorlagen/adr.md)).
 
 ### Spickzettel
 | Zweck | Befehl |
@@ -291,10 +291,10 @@ Tag v* ─► Freigabe durch dich (Environment "prod") ─►
 | **Einkauf** (unterstützend, einfaches CRUD reicht) | `Einkaufsliste` | Keine doppelten offenen Artikel |
 
 - 📥 intent.md, Glossar, Kontext-Karte
-- 🤖 Claude schreibt `specs/001-aemtchen.md` ([Vorlage](vorlagen/spec.md)) mit **Akzeptanzkriterien im Format Gegeben/Wenn/Dann**
+- 🤖 Claude schreibt `specs/S-001-aemtchen.md` ([Vorlage](vorlagen/spec.md)) mit **Akzeptanzkriterien im Format Gegeben/Wenn/Dann**
 - 🔍 **Du reviewst die Spec.** Hier liegt der größte Hebel: Was hier unklar ist, wird im Code falsch.
 
-✅ `docs/glossar.md`, `docs/kontext-karte.md`, `specs/001-aemtchen.md`, ADR „Modularer Monolith“
+✅ `docs/glossar.md`, `docs/kontext-karte.md`, `specs/S-001-aemtchen.md`, ADR „Modularer Monolith“
 
 ---
 
@@ -391,7 +391,7 @@ Rollen bündeln **Berechtigungen**. Der Code prüft immer die Berechtigung, nie 
 
 | Artefakt | Zweck |
 |---|---|
-| **Plan Mode** + `plans/NNN.md` ([Vorlage](vorlagen/plan.md)) | Kein Code ohne akzeptierten Plan. Frage: „Was könnte brechen? Riskantester Schritt? Verworfene Alternativen?“ |
+| **Plan Mode** + `plans/P-NNN.md` ([Vorlage](vorlagen/plan.md)) | Kein Code ohne akzeptierten Plan. Frage: „Was könnte brechen? Riskantester Schritt? Verworfene Alternativen?“ |
 | Skill `ddd-konventionen` | Wo Code hingehört und wie Aggregate und Events aussehen |
 | Skill `sichere-route` | Jeder neue Endpoint braucht Berechtigung, Mandantenfilter und einen 403/404-Test |
 | Subagent `verifier` | Prüft am Ende mit frischem Kontext: Diff gegen Plan, Tests, Rechte-Matrix |

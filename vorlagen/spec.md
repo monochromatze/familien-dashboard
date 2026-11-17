@@ -1,6 +1,6 @@
-# Spec NNN: <Titel>
+# Spec S-NNN: <Titel>
 
-- **Basiert auf:** intent/NNN-….md · **Reviewer:** <Product Owner> · **Status:** Entwurf | Freigegeben
+- **Basiert auf:** intent/I-NNN-….md · **Reviewer:** <Product Owner> · **Status:** Entwurf | Freigegeben
 
 ## Zusammenfassung
 ## User Stories & Akzeptanzkriterien
