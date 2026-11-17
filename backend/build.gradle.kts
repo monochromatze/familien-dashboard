@@ -41,3 +41,9 @@ tasks.withType<Test> {
 detekt {
     buildUponDefaultConfig = true
 }
+
+// Der einfache Task "detekt" arbeitet ohne Typauflösung und übersieht z. B. "!!" (R12).
+// Deshalb führt "detekt" immer auch die Varianten mit Typauflösung aus (Hook und CI).
+tasks.named("detekt") {
+    dependsOn("detektMain", "detektTest")
+}
