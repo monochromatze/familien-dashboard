@@ -1,4 +1,4 @@
-# ADR 0001: Tech-Stack für das Familien-Dashboard
+# ADR-0001: Tech-Stack für das Familien-Dashboard
 
 - **Datum:** 2026-11-16 · **Status:** Akzeptiert
 
@@ -6,7 +6,7 @@
 Das Familien-Dashboard ist ein Lernprojekt eines Product Managers. Der Agent (Claude Code) schreibt den Code, der Nutzer liefert die Eingaben (Intent, Spec, Regeln) und prüft das Ergebnis. Randbedingungen:
 
 - Alles läuft lokal auf einem Mac und kostet kein Geld.
-- Die Familie nutzt die App im Heim-WLAN (`intent/001`).
+- Die Familie nutzt die App im Heim-WLAN (`intent/I-001`).
 - Der Stack soll dem ähneln, was der Nutzer bei der Arbeit sieht (Kotlin-Backend, React-Frontend).
 - Der Code muss für einen Agenten zuverlässig erzeugbar und per Test, Linter und Architektur-Regeln prüfbar sein.
 - Das GitHub-Repo ist öffentlich (kostenlose Branch Protection). Familiendaten liegen nur in der lokalen Datenbank.

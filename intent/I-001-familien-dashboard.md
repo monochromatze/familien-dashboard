@@ -1,4 +1,4 @@
-# Intent 001: Familien-Dashboard
+# Intent I-001: Familien-Dashboard
 
 - **Autor:** PM (Nutzer), Entwurf mit Claude · **Datum:** 2026-11-16 · **Status:** Akzeptiert (2026-11-16)
 - **Auslöser:** Interview (5 Interviews) + eigene Erfahrung

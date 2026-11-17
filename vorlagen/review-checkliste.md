@@ -11,7 +11,7 @@
 ## 2. Passt der PR zum Auftrag?
 - [ ] Er verweist auf ein Issue bzw. auf spec/plan
 - [ ] Es wurde nur das gebaut, was im Plan steht (nichts Zusätzliches „nebenbei“)
-- [ ] Bei Abweichungen wurde `plans/NNN.md` im selben PR angepasst
+- [ ] Bei Abweichungen wurde `plans/P-NNN.md` im selben PR angepasst
 - [ ] Größe: unter etwa 400 geänderten Zeilen. Sonst aufteilen lassen.
 
 ## 3. Tests lesen (das Wichtigste)

@@ -1,6 +1,6 @@
-# Plan NNN: <Titel>
+# Plan P-NNN: <Titel>
 
-- **Basiert auf:** intent/NNN, specs/NNN · **Freigegeben von:** <Name> am <Datum>
+- **Basiert auf:** intent/I-NNN, specs/S-NNN · **Freigegeben von:** <Name> am <Datum>
 
 ## Dateien, die sich ändern
 | Datei | Änderung |

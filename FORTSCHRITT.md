@@ -18,17 +18,18 @@
 | 2026-11-14 | GitHub-Repo öffentlich (kostenlose Branch Protection und Environments). Familiendaten bleiben lokal. |
 | 2026-11-16 | MVP: kein vollständiger Kalender, nur Übersicht „Heute“ und „Diese Woche“. Punkte und Belohnungen **nicht** im MVP (Aufgaben: erledigt melden → Elternteil bestätigt). |
 | 2026-11-16 | Neuer Job 5 aufgenommen (Essensauswahl nach Vorlieben aller Teilnehmenden), als Hypothese ohne Beleg aus Interviews. **Nach dem MVP** (Folgeversion). |
-| 2026-11-16 | `intent/001` akzeptiert. Hauptmetrik: Anteil rechtzeitig erledigter Aufgaben, Ziel 80 % nach 3 Monaten. Frist ist Pflicht, keine Fristverschiebung im MVP (Messung später), Rolle Gast entfällt. Zugriff nur im Heim-WLAN. |
-| 2026-11-16 | Repo `monochromatze/familien-dashboard` öffentlich. Branch Protection auf `main`: PR Pflicht, gilt auch für Admins, kein Force-Push, kein Löschen, 0 Freigaben (Einzelperson). CI-Check kommt in Modul 4. ADR 0001 (Tech-Stack) akzeptiert. |
+| 2026-11-16 | `intent/I-001` akzeptiert. Hauptmetrik: Anteil rechtzeitig erledigter Aufgaben, Ziel 80 % nach 3 Monaten. Frist ist Pflicht, keine Fristverschiebung im MVP (Messung später), Rolle Gast entfällt. Zugriff nur im Heim-WLAN. |
+| 2026-11-16 | Repo `monochromatze/familien-dashboard` öffentlich. Branch Protection auf `main`: PR Pflicht, gilt auch für Admins, kein Force-Push, kein Löschen, 0 Freigaben (Einzelperson). CI-Check kommt in Modul 4. ADR-0001 (Tech-Stack) akzeptiert. |
+| 2026-11-17 | Nummerierung mit Typ-Präfix, je Typ eigener Zähler: `I-001` (Intent), `S-001` (Spec), `P-001` (Plan), `ADR-0001`. Grund: gleiche Nummern bei Intent und Plan suggerierten ein Paar. Die Beziehung steht im Feld „Basiert auf“. |
 
 ## Module
 - [x] **0 – Setup:** OrbStack · Node/npm · Java 21 · IntelliJ/VS Code · `gh auth login` · Output-Style „Explanatory“
-- [x] **1 – Discovery & Wettbewerb:** Interviews · Jobs-to-be-Done · Wettbewerbsanalyse (3 Fakten geprüft) · `intent/001` · North Star · MVP
-- [x] **2 – Git & GitHub:** `git init` · Repo erstellt · Branch Protection · Issues (#3–#7) · ADR 0001 · Merge-Konflikt geübt
+- [x] **1 – Discovery & Wettbewerb:** Interviews · Jobs-to-be-Done · Wettbewerbsanalyse (3 Fakten geprüft) · `intent/I-001` · North Star · MVP
+- [x] **2 – Git & GitHub:** `git init` · Repo erstellt · Branch Protection · Issues (#3–#7) · ADR-0001 · Merge-Konflikt geübt
 - [~] **3 – Agent-Grundausstattung:** [x] CLAUDE.md ausgebaut · [~] Hooks (PreToolUse live ausgelöst; SessionStart, PostToolUse, Stop noch ohne Live-Beleg) · [x] `docs/coding-regeln.md` · [ ] Linter (kommt in Modul 4)
 - [ ] **4 – Walking Skeleton:** `/api/health` mit Test · Dockerfile · compose.yml · CI grün
 - [ ] **5 – QA & Prod + CD:** Self-hosted Runner · `fd-qa` / `fd-prod` · Prod-Freigabe · Rollback geübt
-- [ ] **6 – DDD:** Event Storming · Glossar · Kontext-Karte · `specs/001` reviewt
+- [ ] **6 – DDD:** Event Storming · Glossar · Kontext-Karte · `specs/S-001` reviewt
 - [ ] **7 – Code beurteilen:** Review-Checkliste angewendet · Fehler-PR (3 von 3 Fehlern gefunden?)
 - [ ] **8 – Feature 1 (TDD):** Testliste 1–8 · Abdeckung von `domain/` ≥ 90 % · läuft auf QA und Prod
 - [ ] **9 – Postgres:** Flyway · Constraints · Index + `EXPLAIN` · Backup-Restore-Test
@@ -54,7 +55,7 @@
 - Output-Style „Explanatory“ in den App-Einstellungen gesetzt (gilt ab der nächsten Sitzung)
 
 ### 2026-11-16 – Modul 1 Discovery & Wettbewerb
-- Gelernt: Ein **Intent** beschreibt Problem und messbares Ergebnis, ein Epic/Feature dagegen eine Lösung. Kette: Intent → Spec → Plan → Code. `intent/001` ist der Produkt-Intent, kleinere Intents folgen pro Auslöser.
+- Gelernt: Ein **Intent** beschreibt Problem und messbares Ergebnis, ein Epic/Feature dagegen eine Lösung. Kette: Intent → Spec → Plan → Code. `intent/I-001` ist der Produkt-Intent, kleinere Intents folgen pro Auslöser.
 - Gelernt: **Jobs-to-be-Done** („Wenn …, will ich …, damit …“) entstehen aus Geschichten. Stärke = in wie vielen Interviews ein Job unabhängig vorkommt. Eine Familie ist keine unabhängige Stichprobe.
 - Gelernt: Eine Metrik im Intent erzwingt Produktentscheidungen (rechtzeitig erledigt → Frist ist Pflicht) und lässt sich umgehen (Fristverschiebung, später messen).
 - Agent lag falsch: Bei OurHome hatte Claude „2022 zuletzt aktualisiert, vermutlich aufgegeben“ geschrieben, die Quelle war ein Konkurrent. Tatsächlich Update am 02.10.2026. Cozi-Preise und Skylight-Plus-Belohnungen stimmten.

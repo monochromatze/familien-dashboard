@@ -1,4 +1,4 @@
-# Intent NNN: <Titel>
+# Intent I-NNN: <Titel>
 
 - **Autor:** <Name> · **Datum:** <JJJJ-MM-TT> · **Status:** Entwurf | Akzeptiert | Verworfen
 - **Auslöser:** Idee | Interview | Metrik-Abweichung | Bug
