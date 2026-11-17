@@ -3,9 +3,9 @@
 > **Für Claude:** Lies diese Datei zu Beginn jeder Sitzung. Setze beim nächsten offenen Schritt an. Aktualisiere sie am Ende jeder Sitzung (Checkboxen, „Aktueller Stand“, Lernjournal) und committe sie.
 
 ## Aktueller Stand
-- **Aktuelles Modul:** 4 – Walking Skeleton (fertig, sobald PR #16 gemergt ist). Danach Modul 5.
-- **Nächster Schritt:** PR #16 mergen. Dann Modul 5 (QA & Prod + CD): Self-hosted Runner, `fd-qa` / `fd-prod`, Image-Tag = Git-SHA, Prod-Freigabe, Rollback üben. Plan `P-002` schreiben und freigeben lassen, bevor Code entsteht.
-- **Offene Entscheidungen:** Basismessung für den Zielwert 80 % (vier Wochen Aufgaben notieren?), Bestätigung bei verspäteter Bestätigung, PIN-Login für Kinder. Technisch: detekt läuft als Alpha (`2.0.0-alpha.6`), GitHub Actions später per Commit-SHA statt Major-Tag pinnen.
+- **Aktuelles Modul:** 4 – Walking Skeleton abgeschlossen (PR #13 bis #16 gemergt, CI grün, Pflicht-Checks aktiv). Als Nächstes Modul 5.
+- **Nächster Schritt:** Modul 5 (QA & Prod + CD): zuerst Plan `P-002` schreiben und von dir freigeben lassen, dann Self-hosted Runner, `fd-qa` / `fd-prod`, Image-Tag = Git-SHA, Prod-Freigabe, Rollback üben. Sicherheitsregel aus ADR-0001: Der Runner führt nie Code aus PRs aus.
+- **Offene Entscheidungen:** Basismessung für den Zielwert 80 % (vier Wochen Aufgaben notieren?), Bestätigung bei verspäteter Bestätigung, PIN-Login für Kinder. Technisch: detekt läuft als Alpha (`2.0.0-alpha.6`), GitHub Actions später per Commit-SHA statt Major-Tag pinnen, Migrations-Hook braucht eine echte Migration (Modul 9).
 - **Blocker:** –
 
 ## Entscheidungen (Kurzfassung, Details in docs/adr/)
@@ -24,6 +24,7 @@
 | 2026-11-17 | Nummerierung mit Typ-Präfix, je Typ eigener Zähler: `I-001` (Intent), `S-001` (Spec), `P-001` (Plan), `ADR-0001`. Grund: gleiche Nummern bei Intent und Plan suggerierten ein Paar. Die Beziehung steht im Feld „Basiert auf“. |
 | 2026-11-17 | Walking Skeleton: TypeScript bleibt auf 6.0 und ESLint (statt TS 7/oxlint aus dem Vite-Template), weil `typescript-eslint` TS 7 noch nicht kann. detekt 2.0.0-alpha.6 mit Kotlin 2.4.10, weil der stabile detekt neue Kotlin-Versionen nicht kennt. Ein Image für alles (Multi-Stage), Spring liefert das Frontend aus. |
 | 2026-11-17 | Branch Protection auf `main` um die Pflicht-Checks Backend, Frontend und Docker ergänzt (erst nach dem ersten grünen CI-Lauf). Rest unverändert. |
+| 2026-11-17 | PR-Titel und Commit-Typen bleiben bei Conventional Commits (`feat:`, `fix:`, `docs:`, `chore:`), auch wenn der Branch `feature/…` heißt. Zwei Ebenen: Branch-Name = Etikett für Menschen, Commit-Typ = Schlüsselwort für Werkzeuge. |
 
 ## Module
 - [x] **0 – Setup:** OrbStack · Node/npm · Java 21 · IntelliJ/VS Code · `gh auth login` · Output-Style „Explanatory“
@@ -85,3 +86,5 @@
 - Hooks live belegt: PostToolUse (ktlint, `!!`, `any`, Prettier-Auto-Format), Stop (roter Test blockiert das Fertigmelden), PreToolUse (ein Befehl mit `.env`-Pfaden wurde blockiert und nicht umgangen), SessionStart.
 - Agent lag falsch oder musste nachbessern: Der einfache `detekt`-Task sieht `!!` nicht, erst `detektMain`/`detektTest` mit Typauflösung. Kotlin-Version musste zu detekt passen. Das Vite-Template brachte TS 7 und oxlint mit, das passte nicht zu unseren Regeln. Ein Test, der nicht kompiliert, wird vom Hook beanstandet, deshalb zuerst ein Stub. PR-Titel von PR A mit `feature:` statt `feat:` (Branch-Präfix und Commit-Typ verwechselt).
 - Für CLAUDE.md: Abschnitt „Befehle“ und „Stolpersteine“ eingetragen. Noch offen: Migrations-Hook mit echter Migration (Modul 9), Actions per SHA pinnen, detekt-Alpha beobachten.
+- Gelernt (Nachtrag): **Branch-Name und Commit-Typ sind zwei Ebenen.** Bei Squash-Merge wird der PR-Titel zur Commit-Nachricht auf `main`. Deshalb `feat:` im Titel, auch wenn der Branch `feature/…` heißt. PR #13 hat fälschlich `feature:` im Titel, das lässt sich auf dem geschützten `main` nicht korrigieren. Idee für später: Hook oder CI-Check, der PR-Titel ohne erlaubten Typ ablehnt (commitlint, R14).
+- Arbeitsweise bewährt: Pro PR erst Plan-Abschnitt, dann roter Test, dann Code, dann manuelle Prüfung. Du gibst Plan und Merges frei, Hooks und CI fangen die Fehler ab.
