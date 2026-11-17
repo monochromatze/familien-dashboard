@@ -1,0 +1,87 @@
+name: CI
+
+# Läuft bei jedem Pull Request und bei jedem Push auf main.
+# Alles auf GitHub-eigenen Runnern. Der Self-hosted Runner (dein Mac) kommt erst in Modul 5
+# und führt nie Code aus Pull Requests aus.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# Minimale Rechte: Die CI darf den Code nur lesen.
+permissions:
+  contents: read
+
+# Neuer Push auf denselben Branch bricht den veralteten Lauf ab.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: "21"
+      - uses: gradle/actions/setup-gradle@v6
+      # ktlint (Format), detekt (Linter), schnelle Tests, Integrationstests mit echtem Postgres.
+      # Docker ist auf dem Runner vorinstalliert (Testcontainers).
+      - name: Lint und Tests
+        run: ./gradlew ktlintCheck detekt test integrationTest --console=plain
+
+  frontend:
+    name: Frontend
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - name: ESLint
+        run: npm run lint
+      - name: Prettier
+        run: npm run format:check
+      - name: Typen (tsc)
+        run: npx tsc -b
+      - name: Tests
+        run: npm test -- --run
+      - name: Build
+        run: npm run build
+
+  docker:
+    name: Docker
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      # Platzhalter-Passwort aus der Beispiel-Datei: Dieser Stack lebt nur für diesen Lauf.
+      COMPOSE: docker compose -p fd-ci --env-file deploy/dev.env.example -f deploy/compose.yml
+    steps:
+      - uses: actions/checkout@v7
+      - name: Image bauen und Stack starten
+        run: $COMPOSE up -d --build --wait
+      - name: Rauchtest /api/health
+        run: |
+          curl --fail --silent --show-error http://127.0.0.1:8080/api/health | tee /dev/stderr | grep -q '"db":"ok"'
+      - name: Rauchtest Startseite
+        run: curl --fail --silent http://127.0.0.1:8080/ | grep -q "<title>Familien-Dashboard</title>"
+      - name: Logs bei Fehler
+        if: failure()
+        run: $COMPOSE logs --no-color
+      - name: Aufräumen
+        if: always()
+        run: $COMPOSE down -v

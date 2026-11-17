@@ -4,7 +4,7 @@
 
 | # | Regel | Geprüft durch |
 |---|---|---|
-| R1 | Code-Format ist einheitlich | automatisch: ktlint, Prettier (PostToolUse-Hook vorbereitet, aktiv ab Modul 4, CI ab Modul 4) |
+| R1 | Code-Format ist einheitlich | automatisch: ktlint, Prettier (PostToolUse-Hook + CI, aktiv seit Modul 4) |
 | R2 | Keine Warnungen von detekt / ESLint | automatisch: Linter (Hook + CI) |
 | R3 | `domain/` importiert nichts aus Spring, JPA, `infrastructure/`, `web/` | automatisch: ArchUnit-Test |
 | R4 | Fachliche Regeln stehen in Aggregaten, nicht in Controllern | ArchUnit (teilweise) + Review |
@@ -19,9 +19,11 @@
 | R13 | Keine personenbezogenen Daten in Logs oder Analytics | Review + Skill |
 | R14 | Commit-Nachrichten nach Conventional Commits | automatisch: commitlint (optional) |
 | R15 | Nie direkt auf `main` pushen | automatisch: PreToolUse-Hook (aktiv) + Branch Protection |
-| R16 | Agent meldet „fertig“ erst bei grünen schnellen Tests | automatisch: Stop-Hook (vorbereitet, aktiv ab Modul 4) |
+| R16 | Agent meldet „fertig“ erst bei grünen schnellen Tests | automatisch: Stop-Hook (aktiv seit Modul 4, nur schnelle Tests) |
 
 ## Status der Durchsetzung
-- **Aktiv:** R9, R10, R15 (Hooks). Es gibt noch keinen Code, daher greifen R1, R2, R11, R12, R16 erst ab Modul 4.
-- **Kommt mit Modul 4 (Walking Skeleton):** Linter-Konfiguration (ktlint, detekt, Prettier, ESLint) und CI.
+- **Aktiv (Hooks):** R9, R10, R15 (PreToolUse), R1, R2, R11, R12 (PostToolUse), R16 (Stop). Alle mindestens einmal live ausgelöst (Modul 3 und 4).
+- **Aktiv (CI):** R1, R2, R11, R12 über `.github/workflows/ci.yml` (ktlint, detekt, ESLint, Prettier, `tsc`, Tests).
+- **Hinweis zu R12:** Nur detekt mit Typauflösung findet `!!`. Der Task `detekt` hängt deshalb an `detektMain` und `detektTest`.
+- **Noch offen:** R9 gegen echte Migrationen (Hook per Handtest geprüft, Flyway-Validierung ab Modul 9), R14 (commitlint optional).
 - **Kommt mit Modul 6/7:** ArchUnit-Tests (R3, R4, R6).

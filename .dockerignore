@@ -1,0 +1,27 @@
+# Was NICHT in den Docker-Build-Kontext gelangt. Wichtig für Geheimnisse und Build-Geschwindigkeit.
+
+# Geheimnisse: nie ins Image
+.env
+.env.*
+*.env
+!*.env.example
+
+# Git und Agent-Konfiguration
+.git
+.claude
+.github
+
+# Lokale Build-Ausgaben und Abhängigkeiten, im Image wird neu gebaut
+**/node_modules
+**/dist
+**/build
+**/.gradle
+**/.kotlin
+
+# Dokumentation und Kursmaterial
+docs
+intent
+plans
+specs
+vorlagen
+*.md
