@@ -18,6 +18,7 @@ Kotlin + Spring Boot (Gradle) · TypeScript + React + Vite (npm) · PostgreSQL 1
 ## Regeln
 - SDLC-Artefakte: `intent/` → `specs/` → `plans/` → Code + Tests → PR. Kein Code ohne akzeptierten Plan.
 - Nummerierung: Jeder Artefakttyp hat ein Präfix und zählt für sich: `I-001` (Intent), `S-001` (Spec), `P-001` (Plan), `ADR-0001` (ADR, vierstellig). Dateiname z. B. `plans/P-001-walking-skeleton.md`. Die Nummer sagt nichts über Zusammengehörigkeit. Die Beziehung steht im Feld „Basiert auf“ im Dokument.
+- Branch-Namen nennen die Phase: `intent/…`, `spec/…`, `plan/…`, `adr/…` für die Artefakte (z. B. `plan/p-001-walking-skeleton`), `feature/…` für Funktionen (nicht `feat/`), `fix/…` für Fehlerbehebungen, `chore/…` für Aufräumarbeiten, `docs/…` nur für sonstige Dokumentation (Fortschritt, Interviews, Wettbewerb). Commit-Nachrichten bleiben bei Conventional Commits (`feat:`, `docs:` …), das ist eine andere Ebene.
 - TDD: zuerst ein fehlschlagender Test, dann der Code. Tests nie abschwächen, um grün zu werden.
 - DDD-Schichten: `domain/` ist frei von Spring und JPA. Begriffe aus `docs/glossar.md` verwenden.
 - Nie direkt auf `main` pushen. Immer über Branch und PR.
