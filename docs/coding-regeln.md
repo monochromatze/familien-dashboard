@@ -24,6 +24,7 @@
 ## Status der Durchsetzung
 - **Aktiv (Hooks):** R9, R10, R15 (PreToolUse), R1, R2, R11, R12 (PostToolUse), R16 (Stop). Alle mindestens einmal live ausgelöst (Modul 3 und 4).
 - **Aktiv (CI):** R1, R2, R11, R12 über `.github/workflows/ci.yml` (ktlint, detekt, ESLint, Prettier, `tsc`, Tests).
+- **Aktiv (CI, Skripte):** shellcheck für `scripts/*.sh` (Job „Skripte“ in `ci.yml`).
 - **Hinweis zu R12:** Nur detekt mit Typauflösung findet `!!`. Der Task `detekt` hängt deshalb an `detektMain` und `detektTest`.
 - **Noch offen:** R9 gegen echte Migrationen (Hook per Handtest geprüft, Flyway-Validierung ab Modul 9), R14 (commitlint optional).
 - **Kommt mit Modul 6/7:** ArchUnit-Tests (R3, R4, R6).

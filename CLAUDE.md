@@ -48,6 +48,11 @@ Alle Befehle laufen vom Hauptordner des Repos aus. Die Hooks und die CI nutzen d
 - Nur Datenbank für lokale Entwicklung: `docker compose --env-file deploy/dev.env -f deploy/compose.yml -f deploy/compose.dev.yml up -d db`
 - Stoppen, Daten bleiben: `docker compose -f deploy/compose.yml down` · Stoppen und Daten löschen: `... down -v`
 
+**Deploy** (Hauptordner, Zugangsdaten liegen in `~/familien-dashboard-secrets/`, Details in `docs/betrieb.md`):
+- QA rollt automatisch bei jedem Merge auf `main` aus (Workflow `deploy-qa.yml`, Self-hosted Runner muss laufen: `~/actions-runner/run.sh`).
+- Prod: Tag setzen und pushen (`git tag v0.1.1 && git push origin v0.1.1`), dann in GitHub „Approve“ (Workflow `deploy-prod.yml`).
+- Von Hand oder Rollback: `ENV_FILE=~/familien-dashboard-secrets/<qa|prod>.env scripts/deploy.sh <qa|prod> <git-sha>` (baut nie, löscht nie Daten). Rauchtest allein: `scripts/smoke-test.sh <qa|prod>`.
+
 **Stolpersteine:**
 - Der einfache `detekt`-Task hängt an `detektMain`/`detektTest`, weil nur mit Typauflösung `!!` gefunden wird. detekt 2.0.0-alpha.6 verlangt genau Kotlin 2.4.10.
 - TypeScript bleibt auf 6.0.x, bis `typescript-eslint` Version 7 unterstützt. Neue Vite-Vorlagen bringen oxlint und TS 7 mit, beides bei Bedarf ersetzen.

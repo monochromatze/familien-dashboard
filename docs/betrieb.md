@@ -1,6 +1,6 @@
 # Betrieb: QA und Prod auf dem Mac
 
-Stand: Plan `P-002`. Dieses Dokument wächst mit den PRs (Rollback kommt in PR E).
+Stand: Plan `P-002`, alle Teile umgesetzt.
 
 ## Überblick
 ```
@@ -73,6 +73,24 @@ git tag v0.1.0
 git push origin v0.1.0
 ```
 Dann in GitHub unter *Actions → Deploy Prod* auf **Review deployments → prod → Approve** klicken. Danach rollt der Mac das Image mit der SHA des Tags aus. Das Image muss existieren, weil der QA-Deploy es beim Merge gebaut hat. Fehlt es (Runner war aus), bricht der Deploy mit einer klaren Meldung ab.
+
+## Rollback
+Jedes Image bleibt unter seiner Git-SHA im Docker liegen. Ein Rollback ist deshalb derselbe Befehl wie ein Deploy, nur mit der SHA der vorherigen Version. Er baut nichts, und die Datenbank bleibt unberührt.
+
+1. Die SHA der letzten guten Version ermitteln (Tag, wenn es ein Release war):
+   ```bash
+   git rev-parse v0.1.0
+   ```
+   Alle vorhandenen Images zeigt `docker images familien-dashboard`.
+2. Auf Prod zurückgehen (die SHA aus Schritt 1 einsetzen):
+   ```bash
+   ENV_FILE=~/familien-dashboard-secrets/prod.env scripts/deploy.sh prod <sha>
+   ```
+3. Prüfen: `curl localhost:8080/api/health` meldet `{"status":"ok","db":"ok"}`.
+
+**Geübt am 2026-11-18** (Prod mit einem Image, dessen App nie gesund wird): `deploy.sh` brach nach **72 Sekunden** mit Exit 1 ab (Prod war in dieser Zeit nicht erreichbar). Der Rollback auf `v0.1.0` brauchte **17 Sekunden**. Gesamte Ausfallzeit rund anderthalb Minuten. Der Healthcheck-Zeitraum (`start_period` 30 s plus Wiederholungen) bestimmt, wie schnell ein kaputter Deploy auffällt.
+
+**Grenze:** Der Rollback tauscht nur die App. Hat die neue Version die Datenbank verändert (Flyway-Migration ab Modul 9), läuft die alte App womöglich nicht mehr auf dem neuen Schema. Migrationen müssen deshalb abwärtskompatibel sein (erst ergänzen, später entfernen). Das üben wir in Modul 9.
 
 ## Deploy von Hand (z. B. Fehlersuche)
 Image bauen und ausrollen, wie es der Workflow tut:
