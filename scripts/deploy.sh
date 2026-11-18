@@ -28,6 +28,19 @@ if [[ ! -f "$env_file" ]]; then
   exit 2
 fi
 
+# Eine leere oder unvollständige env-Datei früh und verständlich melden, nicht erst tief in Compose.
+for var in APP_ENV APP_PORT POSTGRES_DB POSTGRES_USER POSTGRES_PASSWORD; do
+  if ! grep -Eq "^${var}=.+" "$env_file"; then
+    echo "FEHLER: ${var} fehlt oder ist leer in ${env_file}. Vorlage: deploy/${stage}.env.example" >&2
+    exit 2
+  fi
+done
+# Schutz vor Verwechslung: Die Datei der Stufe muss auch zu dieser Stufe gehören.
+if ! grep -Eq "^APP_ENV=${stage}$" "$env_file"; then
+  echo "FEHLER: ${env_file} gehört nicht zur Stufe ${stage} (APP_ENV passt nicht)." >&2
+  exit 2
+fi
+
 image="familien-dashboard:${tag}"
 if ! docker image inspect "$image" >/dev/null 2>&1; then
   echo "FEHLER: Image ${image} gibt es nicht. Erst bauen, dieses Skript baut nicht." >&2

@@ -3,9 +3,9 @@
 > **Für Claude:** Lies diese Datei zu Beginn jeder Sitzung. Setze beim nächsten offenen Schritt an. Aktualisiere sie am Ende jeder Sitzung (Checkboxen, „Aktueller Stand“, Lernjournal) und committe sie.
 
 ## Aktueller Stand
-- **Aktuelles Modul:** 4 – Walking Skeleton abgeschlossen (PR #13 bis #16 gemergt, CI grün, Pflicht-Checks aktiv). Als Nächstes Modul 5.
-- **Nächster Schritt:** Modul 5 (QA & Prod + CD): zuerst Plan `P-002` schreiben und von dir freigeben lassen, dann Self-hosted Runner, `fd-qa` / `fd-prod`, Image-Tag = Git-SHA, Prod-Freigabe, Rollback üben. Sicherheitsregel aus ADR-0001: Der Runner führt nie Code aus PRs aus.
-- **Offene Entscheidungen:** Basismessung für den Zielwert 80 % (vier Wochen Aufgaben notieren?), Bestätigung bei verspäteter Bestätigung, PIN-Login für Kinder. Technisch: detekt läuft als Alpha (`2.0.0-alpha.6`), GitHub Actions später per Commit-SHA statt Major-Tag pinnen, Migrations-Hook braucht eine echte Migration (Modul 9).
+- **Aktuelles Modul:** 5 – QA & Prod + CD abgeschlossen (Plan `P-002`, PR #18 bis #23 und PR E). Als Nächstes Modul 6 (DDD).
+- **Nächster Schritt:** Modul 6: Event Storming (gern mit der Familie), Glossar `docs/glossar.md`, Kontext-Karte, dann `specs/S-001` zum Review. Kein Code vor Spec und Plan.
+- **Offene Entscheidungen:** Basismessung für den Zielwert 80 % (vier Wochen Aufgaben notieren?), Bestätigung bei verspäteter Bestätigung, PIN-Login für Kinder. Technisch: detekt läuft als Alpha (`2.0.0-alpha.6`), restliche Actions in `ci.yml` per Commit-SHA pinnen (neue Workflows sind schon gepinnt), Migrations-Hook braucht eine echte Migration (Modul 9), **Fork-PR-Freigabe** auf `all_external_contributors` setzen (Befehl in `docs/betrieb.md`, noch nicht gesetzt), Prod im WLAN/iPhone erreichbar machen (`APP_BIND=0.0.0.0`), Runner später als Dauerdienst, alte Images aufräumen.
 - **Blocker:** –
 
 ## Entscheidungen (Kurzfassung, Details in docs/adr/)
@@ -25,6 +25,8 @@
 | 2026-11-17 | Walking Skeleton: TypeScript bleibt auf 6.0 und ESLint (statt TS 7/oxlint aus dem Vite-Template), weil `typescript-eslint` TS 7 noch nicht kann. detekt 2.0.0-alpha.6 mit Kotlin 2.4.10, weil der stabile detekt neue Kotlin-Versionen nicht kennt. Ein Image für alles (Multi-Stage), Spring liefert das Frontend aus. |
 | 2026-11-17 | Branch Protection auf `main` um die Pflicht-Checks Backend, Frontend und Docker ergänzt (erst nach dem ersten grünen CI-Lauf). Rest unverändert. |
 | 2026-11-17 | PR-Titel und Commit-Typen bleiben bei Conventional Commits (`feat:`, `fix:`, `docs:`, `chore:`), auch wenn der Branch `feature/…` heißt. Zwei Ebenen: Branch-Name = Etikett für Menschen, Commit-Typ = Schlüsselwort für Werkzeuge. |
+| 2026-11-18 | Plan `P-002` akzeptiert: Image nur lokal im Docker (keine Registry), Versionen `v0.1.0` ff. per Tag von Hand, fünf PRs, Prod vorerst nur auf dem Mac (`127.0.0.1`), iPhone später. Repo bleibt öffentlich, weil Branch Protection und Environment-Freigabe sonst kostenpflichtig wären. |
+| 2026-11-18 | Deploy: Runner nur von Hand gestartet (kein Dauerdienst), Workflows nur bei Push auf `main` bzw. Tag `v*`, Zugangsdaten in `~/familien-dashboard-secrets/` außerhalb des Repos, Prod baut nie neu (Image = Git-SHA vom QA-Deploy). |
 
 ## Module
 - [x] **0 – Setup:** OrbStack · Node/npm · Java 21 · IntelliJ/VS Code · `gh auth login` · Output-Style „Explanatory“
@@ -32,7 +34,7 @@
 - [x] **2 – Git & GitHub:** `git init` · Repo erstellt · Branch Protection · Issues (#3–#7) · ADR-0001 · Merge-Konflikt geübt
 - [x] **3 – Agent-Grundausstattung:** CLAUDE.md ausgebaut · Hooks (PreToolUse, PostToolUse, Stop, SessionStart live belegt; Migrations-Hook nur per Handtest, echter Test ab Modul 9) · `docs/coding-regeln.md` · Linter (ktlint, detekt, ESLint, Prettier) konfiguriert
 - [x] **4 – Walking Skeleton:** `/api/health` mit Test · Postgres · React-Seite · Dockerfile · compose.yml · CI grün · Branch Protection mit Pflicht-Checks (Plan `P-001`, PR #13 bis #16)
-- [ ] **5 – QA & Prod + CD:** Self-hosted Runner · `fd-qa` / `fd-prod` · Prod-Freigabe · Rollback geübt
+- [x] **5 – QA & Prod + CD:** Self-hosted Runner · `fd-qa` / `fd-prod` · Prod-Freigabe · Rollback geübt (Plan `P-002`, PR #18 bis #23 und PR E)
 - [ ] **6 – DDD:** Event Storming · Glossar · Kontext-Karte · `specs/S-001` reviewt
 - [ ] **7 – Code beurteilen:** Review-Checkliste angewendet · Fehler-PR (3 von 3 Fehlern gefunden?)
 - [ ] **8 – Feature 1 (TDD):** Testliste 1–8 · Abdeckung von `domain/` ≥ 90 % · läuft auf QA und Prod
@@ -88,3 +90,10 @@
 - Für CLAUDE.md: Abschnitt „Befehle“ und „Stolpersteine“ eingetragen. Noch offen: Migrations-Hook mit echter Migration (Modul 9), Actions per SHA pinnen, detekt-Alpha beobachten.
 - Gelernt (Nachtrag): **Branch-Name und Commit-Typ sind zwei Ebenen.** Bei Squash-Merge wird der PR-Titel zur Commit-Nachricht auf `main`. Deshalb `feat:` im Titel, auch wenn der Branch `feature/…` heißt. PR #13 hat fälschlich `feature:` im Titel, das lässt sich auf dem geschützten `main` nicht korrigieren. Idee für später: Hook oder CI-Check, der PR-Titel ohne erlaubten Typ ablehnt (commitlint, R14).
 - Arbeitsweise bewährt: Pro PR erst Plan-Abschnitt, dann roter Test, dann Code, dann manuelle Prüfung. Du gibst Plan und Merges frei, Hooks und CI fangen die Fehler ab.
+
+### 2026-11-18 – Modul 5 QA & Prod + CD
+- Gelernt: **Build once, deploy many.** Das Image wird beim Merge einmal gebaut (Tag = Git-SHA), QA und Prod führen dieselbe Image-ID aus, nur Port, Datenbank, Volume und Zugangsdaten unterscheiden sie. Das Frontend erfährt die Stufe vom Backend (`/api/env`), weil es überall dasselbe Build ist.
+- Gelernt: **Freigabe ist Konfiguration.** Im Workflow steht nur `environment: prod`, dass der Job auf dich wartet, bestimmt die Einstellung in GitHub. Der Runner ist ein Fremdzugang zum Mac: Trigger nur Push auf `main` und Tag, Tag muss auf `main` liegen, Actions per SHA gepinnt, kein Dauerdienst.
+- **Rollback = Deploy mit alter SHA.** Geübt auf Prod: kaputte Version nach 72 s erkannt (Exit 1, Prod in der Zeit nicht erreichbar), Rollback in 17 s. Grenze: Der Rollback tauscht nur die App, nicht die Datenbank (Migrationen abwärtskompatibel, Modul 9).
+- Agent lag falsch oder musste nachbessern: Der `sed`-Befehl in meiner Anleitung nutzte einen relativen Pfad und erzeugte außerhalb des Repos eine leere `qa.env`, der erste QA-Deploy scheiterte. Behoben mit absolutem Pfad und einer Prüfung in `deploy.sh`, die leere oder falsche env-Dateien früh meldet. Außerdem: Das Löschen mit `$S/*.env` blockierte die Sicherheitsprüfung, richtig ist `"${S:?}"/*.env`.
+- Für CLAUDE.md: Abschnitt „Deploy“ eingetragen. Anleitungen für Befehle des Nutzers immer mit absoluten Pfaden und einer Kontrolle der Ausgabe (z. B. `wc -c`) schreiben.
