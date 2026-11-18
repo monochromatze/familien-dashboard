@@ -1,0 +1,36 @@
+name: Deploy QA
+
+# Läuft auf dem Self-hosted Runner (dein Mac) und NUR nach einem Merge auf main.
+# Nie bei Pull Requests: Der Runner darf keinen fremden Code ausführen (ADR-0001).
+# Ablauf: Image bauen (Tag = Git-SHA), auf Stufe QA ausrollen, Smoke-Test.
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+# Nie zwei Deploys gleichzeitig, und einen laufenden Deploy nicht abbrechen.
+concurrency:
+  group: deploy-qa
+  cancel-in-progress: false
+
+jobs:
+  deploy-qa:
+    name: QA ausrollen
+    # Zweite Absicherung zusätzlich zum Trigger: nur Push auf main im eigenen Repo.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.repository == 'monochromatze/familien-dashboard'
+    runs-on: [self-hosted, macOS, ARM64]
+    timeout-minutes: 20
+    steps:
+      # Gepinnt auf die Commit-SHA von actions/checkout v7 (Tags lassen sich nachträglich verschieben).
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - name: Image bauen (Tag = Git-SHA)
+        run: |
+          export PATH="$HOME/.orbstack/bin:/usr/local/bin:/opt/homebrew/bin:$PATH"
+          docker build --tag "familien-dashboard:${GITHUB_SHA}" .
+      - name: QA ausrollen und Smoke-Test
+        run: |
+          export PATH="$HOME/.orbstack/bin:/usr/local/bin:/opt/homebrew/bin:$PATH"
+          # Die echten Zugangsdaten liegen außerhalb des Repos (siehe docs/betrieb.md).
+          ENV_FILE="$HOME/familien-dashboard-secrets/qa.env" scripts/deploy.sh qa "${GITHUB_SHA}"
