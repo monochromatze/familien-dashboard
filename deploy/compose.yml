@@ -34,6 +34,8 @@ services:
       DB_URL: jdbc:postgresql://db:5432/${POSTGRES_DB}
       DB_USER: ${POSTGRES_USER}
       DB_PASSWORD: ${POSTGRES_PASSWORD}
+      # Stufe (dev, qa, prod): Das Frontend zeigt auf QA ein gelbes Banner.
+      APP_ENV: ${APP_ENV:-dev}
     depends_on:
       db:
         condition: service_healthy

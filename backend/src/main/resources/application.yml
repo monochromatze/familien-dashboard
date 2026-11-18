@@ -1,3 +1,7 @@
+app:
+  # Stufe: dev (lokal), qa oder prod. Kommt aus der env-Datei der jeweiligen Stufe.
+  env: ${APP_ENV:dev}
+
 spring:
   application:
     name: familien-dashboard

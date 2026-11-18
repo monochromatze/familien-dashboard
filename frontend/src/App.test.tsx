@@ -15,6 +15,37 @@ function stubFetch() {
   return fetchMock
 }
 
+// Antwortet je nach Adresse: /api/env mit der Stufe, alles andere mit gesundem Health-Status.
+function stubStage(env: string) {
+  const fetchMock = stubFetch()
+  fetchMock.mockImplementation((input) =>
+    Promise.resolve(
+      String(input) === '/api/env'
+        ? jsonResponse({ env }, 200)
+        : jsonResponse({ status: 'ok', db: 'ok' }, 200),
+    ),
+  )
+}
+
+describe('Stufen-Banner', () => {
+  it('zeigt das Banner "QA", wenn das Backend die Stufe qa meldet', async () => {
+    stubStage('qa')
+
+    render(<App />)
+
+    expect(await screen.findByText('QA')).toBeInTheDocument()
+  })
+
+  it('zeigt kein Banner auf prod', async () => {
+    stubStage('prod')
+
+    render(<App />)
+
+    expect(await screen.findByText('Backend: ok · Datenbank: ok')).toBeInTheDocument()
+    expect(screen.queryByText('QA')).not.toBeInTheDocument()
+  })
+})
+
 describe('App', () => {
   it('zeigt Backend ok und Datenbank ok, wenn /api/health ok meldet', async () => {
     const fetchMock = stubFetch()
