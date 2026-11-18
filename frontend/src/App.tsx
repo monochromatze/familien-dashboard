@@ -27,6 +27,23 @@ async function loadHealth(): Promise<HealthState> {
   }
 }
 
+// Die Stufe (dev, qa, prod) kommt vom Backend, denn das Frontend ist in allen Stufen dasselbe Build.
+// Schlägt der Aufruf fehl, zeigen wir einfach kein Banner.
+async function loadEnv(): Promise<string | null> {
+  try {
+    const response = await fetch('/api/env')
+    const body: unknown = await response.json()
+    return typeof body === 'object' &&
+      body !== null &&
+      'env' in body &&
+      typeof body.env === 'string'
+      ? body.env
+      : null
+  } catch {
+    return null
+  }
+}
+
 function statusText(state: HealthState): string {
   switch (state.kind) {
     case 'loading':
@@ -40,12 +57,18 @@ function statusText(state: HealthState): string {
 
 function App() {
   const [state, setState] = useState<HealthState>({ kind: 'loading' })
+  const [env, setEnv] = useState<string | null>(null)
 
   useEffect(() => {
     let cancelled = false
     void loadHealth().then((next) => {
       if (!cancelled) {
         setState(next)
+      }
+    })
+    void loadEnv().then((next) => {
+      if (!cancelled) {
+        setEnv(next)
       }
     })
     return () => {
@@ -55,6 +78,11 @@ function App() {
 
   return (
     <main>
+      {env === 'qa' && (
+        <div role="note" style={{ background: '#ffd43b', padding: '0.5rem', fontWeight: 'bold' }}>
+          QA
+        </div>
+      )}
       <h1>Familien-Dashboard</h1>
       <p>{statusText(state)}</p>
     </main>
