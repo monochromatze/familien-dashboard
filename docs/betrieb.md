@@ -16,9 +16,11 @@ Die echten env-Dateien liegen in `~/familien-dashboard-secrets/`, nicht im Repo.
 
 ```bash
 mkdir -p ~/familien-dashboard-secrets && chmod 700 ~/familien-dashboard-secrets
-sed "s/bitte-aendern/$(openssl rand -hex 16)/" deploy/qa.env.example > ~/familien-dashboard-secrets/qa.env
+sed "s/bitte-aendern/$(openssl rand -hex 16)/" /Users/matzehome/Documents/WebAppTraining/deploy/qa.env.example > ~/familien-dashboard-secrets/qa.env
 chmod 600 ~/familien-dashboard-secrets/qa.env
+wc -c ~/familien-dashboard-secrets/qa.env   # muss rund 450 Bytes zeigen, nicht 0
 ```
+Der Pfad zur Vorlage ist absolut, damit der Befehl von überall läuft. Mit einem relativen Pfad außerhalb des Repos entsteht sonst eine leere Datei.
 Für Prod genauso mit `prod.env` (ein anderes Passwort als in QA).
 
 ## Self-hosted Runner einrichten (einmalig)
