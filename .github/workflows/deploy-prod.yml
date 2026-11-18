@@ -1,0 +1,52 @@
+name: Deploy Prod
+
+# Läuft nur, wenn du einen Tag v* pushst (z. B. v0.1.0). Nie bei Pull Requests (ADR-0001).
+# Prod baut KEIN neues Image: Es rollt dasselbe Image aus, das der QA-Deploy beim Merge gebaut hat.
+# Vor dem Deploy wartet GitHub auf deine Freigabe (Environment "prod", Pflicht-Reviewer).
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+# Nie zwei Deploys gleichzeitig, und einen laufenden Deploy nicht abbrechen.
+concurrency:
+  group: deploy-prod
+  cancel-in-progress: false
+
+jobs:
+  # Läuft auf einem GitHub-Runner, nicht auf deinem Mac: Ein Tag darf nur auf einen Commit zeigen,
+  # der auf main liegt. Sonst bricht alles ab, bevor dein Mac etwas tut.
+  check-tag:
+    name: Tag liegt auf main
+    if: github.repository == 'monochromatze/familien-dashboard'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+      - name: Prüfen, dass der Tag-Commit in main enthalten ist
+        run: |
+          git fetch origin main
+          if ! git merge-base --is-ancestor "${GITHUB_SHA}" origin/main; then
+            echo "FEHLER: Der Tag ${GITHUB_REF_NAME} zeigt auf einen Commit, der nicht auf main liegt." >&2
+            exit 1
+          fi
+          echo "Ok: ${GITHUB_SHA} liegt auf main."
+
+  deploy-prod:
+    name: Prod ausrollen
+    needs: check-tag
+    # Hier wartet GitHub auf deine Freigabe.
+    environment: prod
+    runs-on: [self-hosted, macOS, ARM64]
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - name: Prod ausrollen und Smoke-Test (vorhandenes Image, kein Neubau)
+        run: |
+          export PATH="$HOME/.orbstack/bin:/usr/local/bin:/opt/homebrew/bin:$PATH"
+          # Die echten Zugangsdaten liegen außerhalb des Repos (siehe docs/betrieb.md).
+          ENV_FILE="$HOME/familien-dashboard-secrets/prod.env" scripts/deploy.sh prod "${GITHUB_SHA}"

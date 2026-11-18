@@ -1,11 +1,12 @@
 # Betrieb: QA und Prod auf dem Mac
 
-Stand: Plan `P-002`. Dieses Dokument wächst mit den PRs (Prod und Rollback kommen in PR D und E).
+Stand: Plan `P-002`. Dieses Dokument wächst mit den PRs (Rollback kommt in PR E).
 
 ## Überblick
 ```
 PR ─► CI auf GitHub-Runnern (Lint, Tests, Build)
 merge auf main ─► Self-hosted Runner (dein Mac): Image bauen, Tag = Git-SHA ─► Stack fd-qa (Port 8081) ─► Smoke-Test
+Tag v* ─► Freigabe durch dich (Environment "prod") ─► DASSELBE Image ─► Stack fd-prod (Port 8080) ─► Smoke-Test
 ```
 - Zwei Stacks aus **derselben** `deploy/compose.yml`: `fd-qa` (8081, gelbes Banner) und `fd-prod` (8080).
 - Jede Stufe hat eigene Datenbank, eigenes Volume und eigene Zugangsdaten.
@@ -21,7 +22,10 @@ chmod 600 ~/familien-dashboard-secrets/qa.env
 wc -c ~/familien-dashboard-secrets/qa.env   # muss rund 450 Bytes zeigen, nicht 0
 ```
 Der Pfad zur Vorlage ist absolut, damit der Befehl von überall läuft. Mit einem relativen Pfad außerhalb des Repos entsteht sonst eine leere Datei.
-Für Prod genauso mit `prod.env` (ein anderes Passwort als in QA).
+Für Prod genauso, mit einem anderen Passwort als in QA:
+```bash
+sed "s/bitte-aendern/$(openssl rand -hex 16)/" /Users/matzehome/Documents/WebAppTraining/deploy/prod.env.example > ~/familien-dashboard-secrets/prod.env && chmod 600 ~/familien-dashboard-secrets/prod.env && wc -c ~/familien-dashboard-secrets/prod.env
+```
 
 ## Self-hosted Runner einrichten (einmalig)
 Der Runner ist ein Programm auf deinem Mac, das Aufträge von GitHub abholt. **Sicherheit:** Das Repo ist öffentlich. Deshalb startet nur `deploy-qa.yml` (Push auf `main`) und später `deploy-prod.yml` (Tag `v*`) auf dem Runner, nie ein PR. Der Runner läuft unter deinem normalen Benutzer, nicht als Admin, und wird von Hand in einem Terminal gestartet (`./run.sh`), nicht als Dauerdienst. Ist er aus, warten Deploys in der Warteschlange.
@@ -56,6 +60,19 @@ Einmalig, damit PRs von Fremden nie ohne deine Freigabe Workflows starten:
 ```bash
 gh api -X PUT repos/monochromatze/familien-dashboard/actions/permissions/fork-pr-contributor-approval -f approval_policy=all_external_contributors
 ```
+
+## Prod freigeben und ausrollen
+**Einmalig: Environment `prod` mit dir als Pflicht-Reviewer** (ohne diese Sperre würde Prod ohne Klick ausgerollt). `prevent_self_review` bleibt aus, du bist die einzige Person und musst dich selbst freigeben können:
+```bash
+gh api -X PUT repos/monochromatze/familien-dashboard/environments/prod -F "reviewers[][type]=User" -F "reviewers[][id]=$(gh api user --jq .id)"
+```
+**Ein Release auslösen** (Tag legst du selbst, der Tag muss auf einen Commit auf `main` zeigen):
+```bash
+git checkout main && git pull
+git tag v0.1.0
+git push origin v0.1.0
+```
+Dann in GitHub unter *Actions → Deploy Prod* auf **Review deployments → prod → Approve** klicken. Danach rollt der Mac das Image mit der SHA des Tags aus. Das Image muss existieren, weil der QA-Deploy es beim Merge gebaut hat. Fehlt es (Runner war aus), bricht der Deploy mit einer klaren Meldung ab.
 
 ## Deploy von Hand (z. B. Fehlersuche)
 Image bauen und ausrollen, wie es der Workflow tut:
