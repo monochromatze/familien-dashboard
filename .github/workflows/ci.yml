@@ -63,6 +63,16 @@ jobs:
       - name: Build
         run: npm run build
 
+  scripts:
+    name: Skripte
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      # shellcheck ist auf dem GitHub-Runner vorinstalliert. Es prüft die Deploy-Skripte auf typische Fehler.
+      - name: shellcheck
+        run: shellcheck scripts/*.sh
+
   docker:
     name: Docker
     runs-on: ubuntu-latest
