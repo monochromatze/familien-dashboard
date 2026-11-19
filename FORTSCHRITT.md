@@ -3,9 +3,10 @@
 > **Für Claude:** Lies diese Datei zu Beginn jeder Sitzung. Setze beim nächsten offenen Schritt an. Aktualisiere sie am Ende jeder Sitzung (Checkboxen, „Aktueller Stand“, Lernjournal) und committe sie.
 
 ## Aktueller Stand
-- **Aktuelles Modul:** 5 – QA & Prod + CD abgeschlossen (Plan `P-002`, PR #18 bis #23 und PR E). Als Nächstes Modul 6 (DDD-Lite).
-- **Nächster Schritt:** Modul 6: Event Storming (gern mit der Familie), Glossar `docs/glossar.md`, Kontext-Karte, dann `specs/S-001` zum Review. Kein Code vor Spec und Plan.
-- **Offene Entscheidungen:** Basismessung für den Zielwert 80 % (vier Wochen Aufgaben notieren?), Bestätigung bei verspäteter Bestätigung, PIN-Login für Kinder. Technisch: detekt läuft als Alpha (`2.0.0-alpha.6`), restliche Actions in `ci.yml` per Commit-SHA pinnen (neue Workflows sind schon gepinnt), Migrations-Hook braucht eine echte Migration (Modul 9), **Fork-PR-Freigabe** auf `all_external_contributors` setzen (Befehl in `docs/betrieb.md`, noch nicht gesetzt), Prod im WLAN/iPhone erreichbar machen (`APP_BIND=0.0.0.0`), Runner später als Dauerdienst, alte Images aufräumen.
+- **Aktuelles Modul:** 6 – DDD-Lite, begonnen. Event Storming (`docs/event-storming.md`) ist fertig und gemergt, der Intent I-001 und `KURS.md` sind an die Entscheidungen angepasst (PR #25, #31 bis #34).
+- **Nächster Schritt:** Modul 6 weiter: Glossar `docs/glossar.md` und Kontext-Karte `docs/kontext-karte.md` aus den Ereignissen und Regeln ableiten, ADR „Modularer Monolith und DDD-Lite“, dann `specs/S-001` zum Review. **Vorher** die offenen Fragen #27 und #28 klären, weil die Akzeptanzkriterien für das Bestätigen davon abhängen. Offen in `docs/event-storming.md`: Sieht ein Kind die Aufgaben, die es für ein Elternteil angelegt hat (Frage 3)? Kein Code vor Spec und Plan.
+- **Offene Fragen und Ideen als Issues:** Fragen #27 (gemeldet, nie bestätigt), #28 (wer bestätigt Aufgaben für ein Elternteil). Ideen #6 (Einkauf), #26 (Aufgaben ohne Termin), #29 (Tauschen), #30 (Zuweisung „an die Eltern“). Neue Ideen als Issue mit Label `idee`, später als eigener Intent.
+- **Offene Entscheidungen:** Basismessung für den Zielwert 80 % (vier Wochen Aufgaben notieren?), PIN-Login für Kinder. Modul 12: Das Experiment „Punkte-Rangliste“ setzt Punkte voraus, die es im MVP nicht gibt (anderes Experiment wählen oder Punkte per eigenem Intent einführen). Technisch: detekt läuft als Alpha (`2.0.0-alpha.6`), restliche Actions in `ci.yml` per Commit-SHA pinnen (neue Workflows sind schon gepinnt), Migrations-Hook braucht eine echte Migration (Modul 9), **Fork-PR-Freigabe** auf `all_external_contributors` setzen (Befehl in `docs/betrieb.md`, noch nicht gesetzt), Prod im WLAN/iPhone erreichbar machen (`APP_BIND=0.0.0.0`), Runner später als Dauerdienst, alte Images aufräumen.
 - **Blocker:** –
 
 ## Entscheidungen (Kurzfassung, Details in docs/adr/)
@@ -27,6 +28,9 @@
 | 2026-11-17 | PR-Titel und Commit-Typen bleiben bei Conventional Commits (`feat:`, `fix:`, `docs:`, `chore:`), auch wenn der Branch `feature/…` heißt. Zwei Ebenen: Branch-Name = Etikett für Menschen, Commit-Typ = Schlüsselwort für Werkzeuge. |
 | 2026-11-18 | Plan `P-002` akzeptiert: Image nur lokal im Docker (keine Registry), Versionen `v0.1.0` ff. per Tag von Hand, fünf PRs, Prod vorerst nur auf dem Mac (`127.0.0.1`), iPhone später. Repo bleibt öffentlich, weil Branch Protection und Environment-Freigabe sonst kostenpflichtig wären. |
 | 2026-11-18 | Deploy: Runner nur von Hand gestartet (kein Dauerdienst), Workflows nur bei Push auf `main` bzw. Tag `v*`, Zugangsdaten in `~/familien-dashboard-secrets/` außerhalb des Repos, Prod baut nie neu (Image = Git-SHA vom QA-Deploy). |
+| 2026-11-19 | **DDD-Lite** statt volles taktisches DDD: Event Storming, Glossar und Kontexte voll, Aggregate und Value Objects nur bei echten Regeln. Begründung in `KURS.md` (Modul 6), Details später im ADR. |
+| 2026-11-19 | MVP nach Event Storming: Einkauf und Aufgaben ohne Termin raus (Ideen), Aufgaben bearbeitbar (Frist unveränderlich, nur der Ersteller korrigiert oder zieht zurück, nur vor der Meldung), gemeldet = nicht mehr bearbeitbar, nicht bestätigt = nicht erledigt, Kinder legen Aufgaben für sich und Eltern an, Eltern sehen alles, Kinder nur ihre eigenen, Mitglieder werden angelegt und danach eingeladen. Details: `intent/I-001` und `docs/event-storming.md`. |
+| 2026-11-19 | Regeln stehen genau einmal (Intent, Spec, Regelkatalog). Issues enthalten nur Ziel und Link, Arbeits-Issues entstehen aus Spec oder Plan, Vorlagen in `.github/ISSUE_TEMPLATE/`. |
 
 ## Module
 - [x] **0 – Setup:** OrbStack · Node/npm · Java 21 · IntelliJ/VS Code · `gh auth login` · Output-Style „Explanatory“
@@ -35,7 +39,7 @@
 - [x] **3 – Agent-Grundausstattung:** CLAUDE.md ausgebaut · Hooks (PreToolUse, PostToolUse, Stop, SessionStart live belegt; Migrations-Hook nur per Handtest, echter Test ab Modul 9) · `docs/coding-regeln.md` · Linter (ktlint, detekt, ESLint, Prettier) konfiguriert
 - [x] **4 – Walking Skeleton:** `/api/health` mit Test · Postgres · React-Seite · Dockerfile · compose.yml · CI grün · Branch Protection mit Pflicht-Checks (Plan `P-001`, PR #13 bis #16)
 - [x] **5 – QA & Prod + CD:** Self-hosted Runner · `fd-qa` / `fd-prod` · Prod-Freigabe · Rollback geübt (Plan `P-002`, PR #18 bis #23 und PR E)
-- [ ] **6 – DDD-Lite:** Event Storming · Glossar · Kontext-Karte · `specs/S-001` reviewt
+- [ ] **6 – DDD-Lite:** ~~Event Storming~~ ✅ (`docs/event-storming.md`) · Glossar · Kontext-Karte · ADR · `specs/S-001` reviewt
 - [ ] **7 – Code beurteilen:** Review-Checkliste angewendet · Fehler-PR (3 von 3 Fehlern gefunden?)
 - [ ] **8 – Feature 1 (TDD):** Testliste 1–8 · Abdeckung von `domain/` ≥ 90 % · läuft auf QA und Prod
 - [ ] **9 – Postgres:** Flyway · Constraints · Index + `EXPLAIN` · Backup-Restore-Test
@@ -97,3 +101,11 @@
 - **Rollback = Deploy mit alter SHA.** Geübt auf Prod: kaputte Version nach 72 s erkannt (Exit 1, Prod in der Zeit nicht erreichbar), Rollback in 17 s. Grenze: Der Rollback tauscht nur die App, nicht die Datenbank (Migrationen abwärtskompatibel, Modul 9).
 - Agent lag falsch oder musste nachbessern: Der `sed`-Befehl in meiner Anleitung nutzte einen relativen Pfad und erzeugte außerhalb des Repos eine leere `qa.env`, der erste QA-Deploy scheiterte. Behoben mit absolutem Pfad und einer Prüfung in `deploy.sh`, die leere oder falsche env-Dateien früh meldet. Außerdem: Das Löschen mit `$S/*.env` blockierte die Sicherheitsprüfung, richtig ist `"${S:?}"/*.env`.
 - Für CLAUDE.md: Abschnitt „Deploy“ eingetragen. Anleitungen für Befehle des Nutzers immer mit absoluten Pfaden und einer Kontrolle der Ausgabe (z. B. `wc -c`) schreiben.
+
+### 2026-11-19 – Modul 6 (Anfang): DDD-Lite und Event Storming
+- Gelernt: DDD hat drei Teile. **Strategisch** (Sprache, Kontexte, Event Storming) ist im Agentic Workflow der größte Hebel, weil der Agent nur kennt, was in Intent, Spec und Glossar steht. **Taktisch** (Aggregat, Value Object) erzeugt der Agent billig, aber du musst es prüfen, und deine Aufmerksamkeit ist der Engpass. Deshalb **DDD-Lite**: ein Muster nur dort, wo eine Regel es schützt.
+- Gelernt: Ein **Ereignis** ist etwas, das fachlich schon passiert ist, in Vergangenheitsform und in Familiensprache. Kein Ereignis sind Handlungen („erledigen"), Akteure, Bildschirme, Datenbankzeilen und Verneinungen („nicht angenommen" → „abgelaufen"). Ein **Zustand** („erledigt, aber nicht bestätigt") zeigt oft ein fehlendes Ereignis und damit eine ungeklärte Regel.
+- Gelernt: Wissen gehört genau **einmal** an einen Ort. Die Issues #3 bis #7 wiederholten Regeln aus dem Intent und waren nach einem Tag veraltet. Jetzt enthalten Issues nur Ziel und Link, und die Vorlagen erzwingen das. Ideen und offene Fragen sind der richtige Inhalt für frühe Issues.
+- Gelernt: Eine Entscheidung zieht eine Kette nach sich („Kinder legen Aufgaben für Eltern an" → wer bestätigt, wer sieht was). Das ist der Wert des Event Storming vor dem Code.
+- Agent lag falsch oder musste nachbessern: Meine DDD-Lite-Anpassung nannte noch `Punktekonto` und den Bereich Einkauf, obwohl der Intent beides aus dem MVP ausschließt. Außerdem stand die DDD-Regel doppelt (`CLAUDE.md` und Regelkatalog), du hast das gemerkt. Und ich habe die Anpassung von `CLAUDE.md` zunächst zu ausführlich geschrieben.
+- Für CLAUDE.md: Zeile „Issues enthalten nie Regeln" und Verweis auf die Coding-Regeln statt Duplikat sind eingetragen. Idee: Regel-IDs (A1 bis A10) in Testnamen und Spec, PRs mit `Closes #N`.
