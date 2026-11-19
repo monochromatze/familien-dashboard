@@ -26,7 +26,7 @@ Die North Star aus dem Kurs („Erledigte Aufgaben pro aktiver Familie und Woche
 
 ## Betroffene Nutzer und Systeme
 - **Elternteil:** legt Aufgaben mit Person und Frist an, bestätigt Erledigtes, lädt Mitglieder ein.
-- **Kind / Teenager:** sieht eigene Aufgaben, meldet sie als erledigt.
+- **Kind / Teenager:** sieht eigene Aufgaben, legt Aufgaben für sich und für Elternteile an, meldet eigene Aufgaben als erledigt.
 - **Geräte:** Smartphones, ein gemeinsames Tablet (auch für Kinder ohne Handy), Laptop/PC. Zugriff **nur im Heim-WLAN**.
 - **Bounded Contexts (Vorarbeit für Modul 6):** Familie & Zugang · Aufgaben.
 
@@ -64,3 +64,8 @@ Die North Star aus dem Kurs („Erledigte Aufgaben pro aktiver Familie und Woche
 - **Aufgaben sind bearbeitbar** (Person, Beschreibung) und können zurückgezogen werden. Die **Frist bleibt unveränderlich**; bei einem Fehler: zurückziehen und neu anlegen.
 - **Nicht bestätigt gilt als nicht erledigt.** Bekanntes Problem, Entscheidung später (Issue #27).
 - **Mitglieder** werden von einem Elternteil angelegt und sind sofort in der App verfügbar. Die Einladung folgt danach und ist der Weg zum eigenen Zugang.
+- **Familie anlegen** geschieht auf dem Startscreen. Wer sie anlegt, ist ein Elternteil.
+- **Kinder dürfen Aufgaben anlegen**, für sich selbst und für Elternteile. Das ändert die Aussage oben („Elternteil legt Aufgaben an").
+- **Sichtbarkeit:** Im MVP sieht jede Person nur ihre eigenen Aufgaben (Elternteile zusätzlich, was sie bestätigen sollen). Das schränkt das Ziel „für alle sichtbar" ein. Tauschen von Aufgaben ist eine spätere Idee (Issue #29). Offen für die Spec: Wie viel sieht ein Elternteil?
+- **Gemeldet = nicht mehr bearbeitbar.** Eine Meldung lässt sich im MVP nicht zurücknehmen.
+- **Offen:** Wer bestätigt eine Aufgabe, die einem Elternteil zugewiesen ist? Issue #28.
