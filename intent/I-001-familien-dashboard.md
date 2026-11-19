@@ -12,7 +12,7 @@ Belege aus den Interviews (Details in `docs/interviews.md`):
 - „Bis abends“ ohne Uhrzeit führt zum Streit; die Müllnachricht ging in der stummgeschalteten Gruppe unter (I3).
 - Tausch unter Geschwistern bleibt unsichtbar, später heißt es, einer habe nichts gemacht (I4).
 
-Begleitende Probleme aus denselben Interviews, die das Dashboard mit abdecken soll: kurzfristige Termine/Abholzeiten stehen im Chat statt im Kalender (Job 2), Einkaufswünsche ohne Sorte und Menge (Job 3).
+Begleitende Probleme aus denselben Interviews: kurzfristige Termine/Abholzeiten stehen im Chat statt im Kalender (Job 2), Einkaufswünsche ohne Sorte und Menge (Job 3). *Der Einkauf wurde am 2026-11-19 aus dem MVP genommen (siehe „Entschieden“).*
 
 > Stichprobe: alle Interviews stammen aus einer Familie.
 
@@ -26,15 +26,14 @@ Die North Star aus dem Kurs („Erledigte Aufgaben pro aktiver Familie und Woche
 
 ## Betroffene Nutzer und Systeme
 - **Elternteil:** legt Aufgaben mit Person und Frist an, bestätigt Erledigtes, lädt Mitglieder ein.
-- **Kind / Teenager:** sieht eigene Aufgaben, meldet sie als erledigt.
+- **Kind / Teenager:** sieht eigene Aufgaben, legt Aufgaben für sich und für Elternteile an, meldet eigene Aufgaben als erledigt.
 - **Geräte:** Smartphones, ein gemeinsames Tablet (auch für Kinder ohne Handy), Laptop/PC. Zugriff **nur im Heim-WLAN**.
-- **Bounded Contexts (Vorarbeit für Modul 6):** Familie & Zugang · Aufgaben · Einkauf (einfach).
+- **Bounded Contexts (Vorarbeit für Modul 6):** Familie & Zugang · Aufgaben.
 
 ## Im Umfang des MVP
-1. Familie anlegen, Mitglieder einladen, Rollen (Elternteil, Kind)
-2. Aufgaben mit **Person und Frist (Pflicht)**, erledigt melden, Elternteil bestätigt
-3. Einkaufsliste (mit Sorte und Menge)
-4. Übersicht **„Heute“ und „Diese Woche“** (kein vollständiger Kalender)
+1. Familie anlegen, Mitglieder anlegen (sofort in der App verfügbar) und danach einladen, Rollen (Elternteil, Kind)
+2. Aufgaben mit **Person und Frist (Pflicht)**, bearbeiten (außer der Frist), zurückziehen, erledigt melden, Elternteil bestätigt
+3. Übersicht **„Heute“ und „Diese Woche“** (kein vollständiger Kalender)
 
 ## Einschränkungen
 - **Datenschutz:** Alles läuft lokal, keine Cloud, keine Weitergabe. Kein Tracking durch Dritte. **Kinderdaten minimal** (Vorname oder Spitzname, kein Geburtsdatum, kein Foto, kein Standort). Eine Familie ist **vollständig löschbar** (und exportierbar).
@@ -43,6 +42,8 @@ Die North Star aus dem Kurs („Erledigte Aufgaben pro aktiver Familie und Woche
 - **Ausdrücklich NICHT dabei:**
   - vollständiger Kalender
   - Punkte und Belohnungen
+  - **Einkaufsliste** (Issue #6)
+  - **Aufgaben ohne Termin** (Issue #26)
   - Rezepte und Essensplanung (Job 5, nach dem MVP, siehe `docs/interviews.md`)
   - Zugriff von außerhalb des Heimnetzes
   - **Fristverschiebung:** Im MVP kann eine Frist nach dem Anlegen nicht verschoben werden. Wie oft Fristen verschoben werden, messen wir erst später (Folgeversion).
@@ -50,9 +51,22 @@ Die North Star aus dem Kurs („Erledigte Aufgaben pro aktiver Familie und Woche
 
 ## Offene Fragen
 - **80 %** ist ein Schätzwert ohne Basismessung. Wie messen wir den heutigen Stand (z. B. vier Wochen Aufgaben notieren)?
-- Was passiert mit einer Aufgabe, die **nicht bestätigt** wird, obwohl das Kind sie gemeldet hat? (Zählt sie als rechtzeitig, wenn die Meldung rechtzeitig war?)
+- Was passiert mit einer Aufgabe, die **nicht bestätigt** wird, obwohl das Kind sie gemeldet hat? Für den MVP entschieden (siehe unten), die eigentliche Frage bleibt offen: Issue #27.
 - Kinder ohne Smartphone: Reicht ein Tablet im Heimnetz, oder braucht es einen PIN-Login pro Kind?
 
 ## Entschieden (2026-11-16)
 - Keine Fristverschiebung im MVP, Messung später.
 - Rolle Gast entfällt im MVP.
+
+## Entschieden (2026-11-19, Event Storming)
+- **Einkauf** ist nicht Teil des MVP (Issue #6, Label `idee`).
+- **Aufgaben ohne Termin** gibt es im MVP nicht, Person und Frist bleiben Pflicht (Issue #26).
+- **Aufgaben sind bearbeitbar** (Person, Beschreibung) und können zurückgezogen werden. Die **Frist bleibt unveränderlich**; bei einem Fehler: zurückziehen und neu anlegen.
+- **Nicht bestätigt gilt als nicht erledigt.** Bekanntes Problem, Entscheidung später (Issue #27).
+- **Mitglieder** werden von einem Elternteil angelegt und sind sofort in der App verfügbar. Die Einladung folgt danach und ist der Weg zum eigenen Zugang.
+- **Familie anlegen** geschieht auf dem Startscreen. Wer sie anlegt, ist ein Elternteil.
+- **Kinder dürfen Aufgaben anlegen**, für sich selbst und für Elternteile. Das ändert die Aussage oben („Elternteil legt Aufgaben an").
+- **Sichtbarkeit:** Elternteile sehen alle Aufgaben der Familie, Kinder nur ihre eigenen. Das schränkt das Ziel „für alle sichtbar" für Kinder ein. Tauschen von Aufgaben ist eine spätere Idee (Issue #29), ebenso „Kind weist Aufgabe den Eltern zu, ohne bestimmte Person" (Issue #30).
+- **Korrigieren und Zurückziehen** darf nur, wer die Aufgabe angelegt hat, und nur vor der Meldung.
+- **Gemeldet = nicht mehr bearbeitbar.** Eine Meldung lässt sich im MVP nicht zurücknehmen.
+- **Offen:** Wer bestätigt eine Aufgabe, die einem Elternteil zugewiesen ist? Issue #28.
