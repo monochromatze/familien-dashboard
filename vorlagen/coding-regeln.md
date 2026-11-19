@@ -7,7 +7,7 @@
 | R1 | Code-Format ist einheitlich | automatisch: ktlint, Prettier (Hook + CI) |
 | R2 | Keine Warnungen von detekt / ESLint | automatisch: Linter (Hook + CI) |
 | R3 | `domain/` importiert nichts aus Spring, JPA, `infrastructure/`, `web/` | automatisch: ArchUnit-Test |
-| R4 | Fachliche Regeln stehen in Aggregaten, nicht in Controllern | ArchUnit (teilweise) + Review |
+| R4 | Fachliche Regeln stehen in `domain/` (bei echten Invarianten als Aggregat oder Value Object), nie in Controllern oder React-Komponenten. Kein Muster ohne Regel, die es schützt | ArchUnit (teilweise) + Review |
 | R5 | Begriffe im Code = Begriffe im Glossar (`docs/glossar.md`) | Review / Skill |
 | R6 | Jeder Endpoint hat eine Berechtigung (`@PreAuthorize`) | automatisch: ArchUnit-Test |
 | R7 | Jede fachliche Abfrage filtert nach `familie_id` aus der Session | Test (Mandantentrennung) + Review |
