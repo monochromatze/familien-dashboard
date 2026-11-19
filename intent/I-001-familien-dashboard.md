@@ -66,6 +66,7 @@ Die North Star aus dem Kurs („Erledigte Aufgaben pro aktiver Familie und Woche
 - **Mitglieder** werden von einem Elternteil angelegt und sind sofort in der App verfügbar. Die Einladung folgt danach und ist der Weg zum eigenen Zugang.
 - **Familie anlegen** geschieht auf dem Startscreen. Wer sie anlegt, ist ein Elternteil.
 - **Kinder dürfen Aufgaben anlegen**, für sich selbst und für Elternteile. Das ändert die Aussage oben („Elternteil legt Aufgaben an").
-- **Sichtbarkeit:** Im MVP sieht jede Person nur ihre eigenen Aufgaben (Elternteile zusätzlich, was sie bestätigen sollen). Das schränkt das Ziel „für alle sichtbar" ein. Tauschen von Aufgaben ist eine spätere Idee (Issue #29). Offen für die Spec: Wie viel sieht ein Elternteil?
+- **Sichtbarkeit:** Elternteile sehen alle Aufgaben der Familie, Kinder nur ihre eigenen. Das schränkt das Ziel „für alle sichtbar" für Kinder ein. Tauschen von Aufgaben ist eine spätere Idee (Issue #29), ebenso „Kind weist Aufgabe den Eltern zu, ohne bestimmte Person" (Issue #30).
+- **Korrigieren und Zurückziehen** darf nur, wer die Aufgabe angelegt hat, und nur vor der Meldung.
 - **Gemeldet = nicht mehr bearbeitbar.** Eine Meldung lässt sich im MVP nicht zurücknehmen.
 - **Offen:** Wer bestätigt eine Aufgabe, die einem Elternteil zugewiesen ist? Issue #28.
