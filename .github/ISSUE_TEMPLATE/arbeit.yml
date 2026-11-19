@@ -1,0 +1,21 @@
+name: Arbeitspaket
+description: Etwas, das gebaut wird. Entsteht aus einer Spec oder einem Plan, nicht direkt aus dem Intent.
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Ein Issue enthält **keine Regeln**, nur Ziel und Link. Die Regeln stehen in Intent, Spec oder Regelkatalog. So gibt es sie nur an einer Stelle.
+  - type: input
+    id: ziel
+    attributes:
+      label: Ziel (ein Satz)
+    validations:
+      required: true
+  - type: input
+    id: quelle
+    attributes:
+      label: Quelle (Link auf Spec, Plan oder Intent)
+      description: Link auf die Datei im Repo, bei Bedarf mit Abschnitt, z. B. specs/S-001-aufgaben.md
+    validations:
+      required: true
