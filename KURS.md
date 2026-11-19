@@ -93,7 +93,7 @@ Du machst nicht alles in einem Chat. Damit jeder neue Chat weiß, wo du stehst, 
 | 5 | QA & Prod lokal + CD | **Deploy** | 5, 8 | `Hallo` auf QA und Prod, Prod nur nach Freigabe |
 | 6 | Domäne modellieren (DDD-Lite) | **Design** | 4 | Glossar, Kontext-Karte, `spec.md` |
 | 7 | Code beurteilen lernen | Test/Review | Review | Review-Routine, Architektur-Tests |
-| 8 | Feature 1 mit TDD | **Build/Test** | 3, 4 | Aufgaben mit Punkten |
+| 8 | Feature 1 mit TDD | **Build/Test** | 3, 4 | Aufgaben: melden, bestätigen |
 | 9 | Postgres in der Tiefe | Build | 2 | Migrationen, Constraints, Backup |
 | 10 | Anmeldung & Berechtigungen | Build/Test | 9 | Login, Einladung, Rollen, Mandantentrennung |
 | 11 | Agent-Ausbau: Plan Mode, Skills, Verifier, Review-Agent | alle | 7 | Feature 2 fast ohne Eingriff |
@@ -137,8 +137,8 @@ Agentische PM-Arbeit: Der Agent recherchiert und strukturiert, du urteilst.
 2. **Wettbewerbsanalyse:** Claude recherchiert z. B. Cozi, FamilyWall, OurHome, Skylight, Google Family Link, Notion-Vorlagen und den echten Hauptkonkurrenten: Google-Kalender plus WhatsApp-Gruppe. Pro Anbieter: Zielgruppe, Jobs, Preismodell, Stärken und Schwächen, EU-Datenschutz, Muster in App-Store-Bewertungen. Dazu eine Positionierungs-Matrix und 3 Marktlücken.
    🔍 **Prüfe 3 Behauptungen selbst an der Quelle.** Notiere, wo der Agent falsch lag. Das ist die Kernfähigkeit im agentischen PM.
 3. **intent.md** nach Playbook: Du erzählst, Claude stellt Rückfragen und schreibt [Vorlage intent](vorlagen/intent.md). Du korrigierst.
-4. **North Star:** „Erledigte Aufgaben pro aktiver Familie und Woche“. **MVP (angepasst am 2026-11-16, siehe `intent/I-001`):** Familie, Einladungen, Rollen (Elternteil, Kind), Aufgaben mit Person und Pflicht-Frist (erledigt melden → Elternteil bestätigt), Einkaufsliste, Übersicht „Heute / Diese Woche“. **Kein** vollständiger Kalender, **keine** Punkte/Belohnungen, **keine** Rolle Gast, **keine** Fristverschiebung. Hauptmetrik: Anteil rechtzeitig erledigter Aufgaben (Ziel 80 %).
-   > Folgen für spätere Module: In Modul 6, 8, 10 und 12 entfallen Punkte (`Punktekonto`, `Punkte`, Testliste 4/7 mit Punkten, Rangliste) und die Rolle Gast. Beim Durcharbeiten dort anpassen.
+4. **North Star:** „Erledigte Aufgaben pro aktiver Familie und Woche“. **MVP (angepasst am 2026-11-16 und 2026-11-19, siehe `intent/I-001`):** Familie, Mitglieder anlegen und einladen, Rollen (Elternteil, Kind), Aufgaben mit Person und Pflicht-Frist (erledigt melden → Elternteil bestätigt), Übersicht „Heute / Diese Woche“. **Kein** vollständiger Kalender, **keine** Punkte/Belohnungen, **keine** Rolle Gast, **keine** Fristverschiebung, **keine** Einkaufsliste (Issue #6, wird Feature 2 in Modul 11). Hauptmetrik: Anteil rechtzeitig erledigter Aufgaben (Ziel 80 %).
+   > Folgen für spätere Module: In Modul 6, 8 und 10 sind Punkte, Einkauf und die Rolle Gast am 2026-11-19 bereinigt. **Noch offen:** In Modul 12 setzt das Experiment „Punkte-Rangliste“ (Feature Flag) Punkte voraus. Beim Durcharbeiten ein anderes Experiment wählen oder Punkte vorher per eigenem Intent einführen.
 
 ✅ `intent/I-001-familien-dashboard.md`, `docs/wettbewerb.md`, `docs/interviews.md`
 
@@ -286,8 +286,8 @@ Tag v* ─► Freigabe durch dich (Environment "prod") ─►
 |---|---|
 | **Immer:** Event Storming, Glossar, Bounded Contexts, Kontext-Karte | voll |
 | **Immer:** `domain/` frei von Spring und JPA (per ArchUnit prüfbar) | voll |
-| **Nur bei echter Regel:** Aggregat, Value Object | nur im Kontext „Ämtchen & Belohnungen“ (`Aufgabe`, `Punktekonto`, `Punkte`) |
-| **Weglassen:** Domain Events als Code, CQRS, Repository-Interface pro Tabelle | einfaches CRUD (z. B. Einkauf) bleibt schlicht |
+| **Nur bei echter Regel:** Aggregat, Value Object | nur im Kontext „Aufgaben“ (`Aufgabe`, siehe Regeln A1 bis A10 in `docs/event-storming.md`) |
+| **Weglassen:** Domain Events als Code, CQRS, Repository-Interface pro Tabelle | einfaches CRUD (z. B. Mitglieder anlegen) bleibt schlicht |
 
 *Faustregel:* Ein taktisches Muster kommt erst ins Spiel, wenn es eine Regel gibt, die es schützt (Invariante), und nicht schon, weil das Muster existiert. *Alternativen, falls DDD-Lite nicht reicht oder zu viel ist:* Vertical Slices (Code pro Feature), Hexagonal (nur Trennung Fachlogik/Technik), Functional Core + Imperative Shell, Transaction Script.
 
@@ -297,9 +297,10 @@ Tag v* ─► Freigabe durch dich (Environment "prod") ─►
 
 | Bounded Context | Aggregate | Beispiel-Invarianten |
 |---|---|---|
-| **Familie & Zugang** | `Familie`, `Einladung`, `Nutzerkonto` | Mindestens ein Elternteil. Eine Einladung ist 7 Tage gültig und nur einmal verwendbar. |
-| **Ämtchen & Belohnungen** (Kern-Domäne) | `Aufgabe`, `Punktekonto` | Nur die zugewiesene Person meldet „erledigt“. Punkte gibt es erst nach Bestätigung. Ein Punktestand ist nie negativ. |
-| **Einkauf** (unterstützend, einfaches CRUD reicht) | `Einkaufsliste` | Keine doppelten offenen Artikel |
+| **Familie & Zugang** (unterstützend, einfache Prüfungen reichen) | `Familie`, `Mitglied`, `Einladung` | Mindestens ein Elternteil. Eine Einladung ist 7 Tage gültig und nur einmal verwendbar. |
+| **Aufgaben** (Kern-Domäne) | `Aufgabe` | Person und Frist sind Pflicht, die Frist ändert sich nie. Nur die zugewiesene Person meldet „erledigt“, nur ein Elternteil bestätigt. Nach der Meldung ist die Aufgabe nicht mehr bearbeitbar. |
+
+*Der Bereich „Einkauf“ und das `Punktekonto` entfallen im MVP (siehe `intent/I-001`). Sie kommen frühestens mit einem späteren Intent zurück.*
 
 - 📥 intent.md, Glossar, Kontext-Karte
 - 🤖 Claude schreibt `specs/S-001-aemtchen.md` ([Vorlage](vorlagen/spec.md)) mit **Akzeptanzkriterien im Format Gegeben/Wenn/Dann**
@@ -341,15 +342,15 @@ Tag v* ─► Freigabe durch dich (Environment "prod") ─►
 
 **Testpyramide:** viele Unit-Tests für `domain/` (Millisekunden, ohne DB) · einige Integrationstests (Repository gegen Postgres, REST-API) · 1–2 Playwright-E2E-Tests (Happy Path im Browser).
 
-**Testliste für das Aggregat `Aufgabe`** (der Agent arbeitet sie in dieser Reihenfolge ab, ein Commit pro grünem Test):
-1. Eine neue Aufgabe ist `offen`.
+**Testliste für das Aggregat `Aufgabe`** (Entwurf aus den Regeln in `docs/event-storming.md`, wird mit den Akzeptanzkriterien aus `specs/S-001` abgeglichen. Der Agent arbeitet sie in dieser Reihenfolge ab, ein Commit pro grünem Test):
+1. Eine Aufgabe braucht eine Person und eine Frist, sonst Fehler (A1). Eine neue Aufgabe ist `offen`.
 2. Die zugewiesene Person kann `erledigt melden`.
-3. Eine **andere** Person kann das nicht (Fehler).
-4. Ein Elternteil `bestätigt`. Es entsteht das Event `AufgabeBestätigt(punkte)`.
-5. Eine offene Aufgabe kann nicht bestätigt werden.
-6. `Zurückweisen` mit Begründung setzt die Aufgabe wieder auf `offen`.
-7. `Punkte` ist ein Value Object zwischen 0 und 100.
-8. Eine wöchentliche Aufgabe erzeugt nach der Bestätigung die nächste Instanz.
+3. Eine **andere** Person kann das nicht (Fehler, A3).
+4. Ein Elternteil `bestätigt` eine gemeldete Aufgabe.
+5. Eine nicht gemeldete Aufgabe kann nicht bestätigt werden, und ein Kind kann nie bestätigen (A4).
+6. Wer die Aufgabe angelegt hat, kann Person und Beschreibung vor der Meldung `korrigieren`, die Frist nie (A2, A10).
+7. Wer die Aufgabe angelegt hat, kann sie vor der Meldung `zurückziehen`. Danach ist sie nicht mehr bearbeitbar (A7) und zählt in keiner Auswertung (A6).
+8. Ist die Frist verstrichen, ohne dass bestätigt wurde, gilt die Aufgabe als `überfällig` und nicht als erledigt (A5).
 
 **Arbeitsweise mit dem Agenten:** „Schreibe **nur** den Test für Punkt 3 und zeige ihn mir.“ → Du prüfst: Beschreibt der Test genau die Regel? → „Jetzt implementieren.“ Ab Punkt 5 darf der Agent mehrere Punkte am Stück machen.
 
@@ -376,21 +377,23 @@ Tag v* ─► Freigabe durch dich (Environment "prod") ─►
 ### So melden sich Nutzer an (Spring Security)
 1. **Registrierung** des ersten Elternteils. Das Passwort wird nur als Hash gespeichert (BCrypt/Argon2), nie im Klartext.
 2. **Login:** Nach der Prüfung bekommt der Nutzer ein **Session-Cookie** (`HttpOnly`, `Secure`, `SameSite`). Die Session liegt in Postgres (Spring Session JDBC). Halte in einem ADR fest, warum Sessions und nicht JWT: Bei einer App mit eigenem Frontend auf derselben Domain sind Sessions einfacher und sicherer.
-3. **Einladung:** Ein zufälliger Token, 7 Tage gültig, einmal verwendbar, die Rolle ist vorgegeben. Für Kinder optional ein PIN-Login auf dem Familien-Tablet.
+3. **Einladung:** Ein Elternteil legt zuerst das Mitglied an (sofort in der App verfügbar), danach folgt die Einladung zum eigenen Zugang. Ein zufälliger Token, 7 Tage gültig, einmal verwendbar, die Rolle ist durch das angelegte Mitglied vorgegeben. Für Kinder optional ein PIN-Login auf dem Familien-Tablet.
 4. Logout, Passwort-Reset (lokal mit **Mailpit**-Container als Fake-Mailserver, kostenlos), Rate-Limiting, CSRF-Schutz.
 5. **In Firmen** übernimmt das meist ein Identity-Provider (Keycloak, Entra ID, Okta) über OIDC. Den zeigt Bonus-Modul B2, lokal mit Keycloak.
 
 ### Zugriff nur auf ausgewählte Aktionen (RBAC)
 Rollen bündeln **Berechtigungen**. Der Code prüft immer die Berechtigung, nie den Rollennamen, z. B. `@PreAuthorize("hasAuthority('aufgabe:bestaetigen')")`. In React werden Buttons nur ausgeblendet. **Die echte Prüfung passiert immer im Backend.**
 
-| Berechtigung | Elternteil | Kind | Gast |
-|---|:-:|:-:|:-:|
-| `aufgabe:anlegen` | ✅ | ❌ | ❌ |
-| `aufgabe:erledigt_melden` (eigene) | ✅ | ✅ | ❌ |
-| `aufgabe:bestaetigen` | ✅ | ❌ | ❌ |
-| `einkauf:bearbeiten` | ✅ | ✅ | ✅ |
-| `mitglied:einladen` | ✅ | ❌ | ❌ |
-| `dashboard:ansehen` | ✅ | ✅ | ✅ |
+| Berechtigung | Elternteil | Kind |
+|---|:-:|:-:|
+| `aufgabe:anlegen` (Kind nur für sich und Elternteile) | ✅ | ✅ |
+| `aufgabe:erledigt_melden` (eigene) | ✅ | ✅ |
+| `aufgabe:bestaetigen` | ✅ | ❌ |
+| `aufgabe:alle_ansehen` (Kinder sehen nur eigene) | ✅ | ❌ |
+| `mitglied:anlegen`, `mitglied:einladen` | ✅ | ❌ |
+| `dashboard:ansehen` (eigene Sicht) | ✅ | ✅ |
+
+*Rolle Gast und Einkauf entfallen im MVP. „Korrigieren und Zurückziehen nur durch den Ersteller“ ist eine Domänenregel (A10), keine Berechtigung.*
 
 **Drei Prüf-Ebenen:** Endpoint (Berechtigung) · Mandant (`familie_id` aus der Session, **nie** aus der URL) · Domäne (z. B. „nur die eigene Aufgabe“).
 
