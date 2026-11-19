@@ -91,7 +91,7 @@ Du machst nicht alles in einem Chat. Damit jeder neue Chat weiß, wo du stehst, 
 | 3 | **Agent-Grundausstattung: CLAUDE.md, Hooks, Coding-Regeln, Linter** | Build | 7, Hooks, Linter | Agent arbeitet mit Leitplanken |
 | 4 | Walking Skeleton: Docker, Postgres, CI | Build/Test | 1, 2, 5 | Grüne CI, App im Container |
 | 5 | QA & Prod lokal + CD | **Deploy** | 5, 8 | `Hallo` auf QA und Prod, Prod nur nach Freigabe |
-| 6 | Domäne modellieren (DDD) | **Design** | 4 | Glossar, Kontext-Karte, `spec.md` |
+| 6 | Domäne modellieren (DDD-Lite) | **Design** | 4 | Glossar, Kontext-Karte, `spec.md` |
 | 7 | Code beurteilen lernen | Test/Review | Review | Review-Routine, Architektur-Tests |
 | 8 | Feature 1 mit TDD | **Build/Test** | 3, 4 | Aufgaben mit Punkten |
 | 9 | Postgres in der Tiefe | Build | 2 | Migrationen, Constraints, Backup |
@@ -278,9 +278,20 @@ Tag v* ─► Freigabe durch dich (Environment "prod") ─►
 
 ---
 
-## Modul 6 – Domäne modellieren mit DDD (SDLC: **Design**, Lernziel 4)
+## Modul 6 – Domäne modellieren mit DDD-Lite (SDLC: **Design**, Lernziel 4)
 
-**Konzepte:** Ubiquitous Language (Glossar) · Bounded Context · Aggregat (schützt Regeln) · Value Object · Domain Event · Repository.
+**Warum „Lite“?** Im Agentic Workflow ist der **strategische** Teil von DDD der wertvollste: Der Agent kennt nur, was in Intent, Spec und Glossar steht, und ein fester Wortschatz hält Specs und Code zusammen. Die **taktischen** Muster (Aggregat, Value Object, Repository) erzeugt der Agent fast kostenlos, aber **du** musst sie lesen und prüfen. Deine Aufmerksamkeit ist der Engpass, und die App ist klein. Deshalb gilt:
+
+| Teil | Umfang in diesem Kurs |
+|---|---|
+| **Immer:** Event Storming, Glossar, Bounded Contexts, Kontext-Karte | voll |
+| **Immer:** `domain/` frei von Spring und JPA (per ArchUnit prüfbar) | voll |
+| **Nur bei echter Regel:** Aggregat, Value Object | nur im Kontext „Ämtchen & Belohnungen“ (`Aufgabe`, `Punktekonto`, `Punkte`) |
+| **Weglassen:** Domain Events als Code, CQRS, Repository-Interface pro Tabelle | einfaches CRUD (z. B. Einkauf) bleibt schlicht |
+
+*Faustregel:* Ein taktisches Muster kommt erst ins Spiel, wenn es eine Regel gibt, die es schützt (Invariante), und nicht schon, weil das Muster existiert. *Alternativen, falls DDD-Lite nicht reicht oder zu viel ist:* Vertical Slices (Code pro Feature), Hexagonal (nur Trennung Fachlogik/Technik), Functional Core + Imperative Shell, Transaction Script.
+
+**Konzepte:** Ubiquitous Language (Glossar) · Bounded Context · Aggregat (schützt Regeln, nur wo es Regeln gibt) · Value Object (nur wo es Regeln gibt).
 
 **Event Storming** mit Post-its oder Miro (Free-Plan), gern mit der Familie: Domain Events (orange, Vergangenheitsform) → Commands (blau) → Akteure (gelb) → Regeln (lila) → Grenzen ziehen.
 
@@ -294,7 +305,7 @@ Tag v* ─► Freigabe durch dich (Environment "prod") ─►
 - 🤖 Claude schreibt `specs/S-001-aemtchen.md` ([Vorlage](vorlagen/spec.md)) mit **Akzeptanzkriterien im Format Gegeben/Wenn/Dann**
 - 🔍 **Du reviewst die Spec.** Hier liegt der größte Hebel: Was hier unklar ist, wird im Code falsch.
 
-✅ `docs/glossar.md`, `docs/kontext-karte.md`, `specs/S-001-aemtchen.md`, ADR „Modularer Monolith“
+✅ `docs/glossar.md`, `docs/kontext-karte.md`, `specs/S-001-aemtchen.md`, ADR „Modularer Monolith und DDD-Lite“ (hält fest, wo taktische Muster gelten und wo nicht)
 
 ---
 
@@ -392,7 +403,7 @@ Rollen bündeln **Berechtigungen**. Der Code prüft immer die Berechtigung, nie 
 | Artefakt | Zweck |
 |---|---|
 | **Plan Mode** + `plans/P-NNN.md` ([Vorlage](vorlagen/plan.md)) | Kein Code ohne akzeptierten Plan. Frage: „Was könnte brechen? Riskantester Schritt? Verworfene Alternativen?“ |
-| Skill `ddd-konventionen` | Wo Code hingehört und wie Aggregate und Events aussehen |
+| Skill `ddd-konventionen` | Wo Code hingehört, welche Begriffe das Glossar vorgibt und wann ein Aggregat sinnvoll ist (nur bei echter Regel) |
 | Skill `sichere-route` | Jeder neue Endpoint braucht Berechtigung, Mandantenfilter und einen 403/404-Test |
 | Subagent `verifier` | Prüft am Ende mit frischem Kontext: Diff gegen Plan, Tests, Rechte-Matrix |
 | Subagent `reviewer` + `REVIEW.md` | Lokales Review in 3 Durchgängen: Bugs, Security, DDD. **Du gibst den Merge frei.** |
@@ -409,7 +420,7 @@ Rollen bündeln **Berechtigungen**. Der Code prüft immer die Berechtigung, nie 
 
 **Produkt-Analytics (dein PM-Kern):**
 1. **Tracking-Plan zuerst** ([Vorlage](vorlagen/tracking-plan.md)): Frage → Event → Properties. Keine personenbezogenen Daten.
-2. Die vorhandenen **Domain Events** werden zusätzlich in eine Tabelle `analytics_event` geschrieben. Dein DDD-Modell liefert so direkt dein Tracking.
+2. Die fachlichen Ereignisse aus dem Event Storming (z. B. „Aufgabe bestätigt“) werden an den entsprechenden Stellen in eine Tabelle `analytics_event` geschrieben. Dein Event Storming liefert so direkt dein Tracking. *(Hier reicht ein einfacher Schreibaufruf, kein Domain-Event-Mechanismus.)*
 3. **Metriken:** North Star · Aktivierung (2 Mitglieder + 1 bestätigte Aufgabe in 7 Tagen) · Retention als Kohorten · Anteil der Kinder, die selbst abhaken · Guardrail: Anteil der Zurückweisungen
 4. **Dashboard in Metabase** (Container, verbunden mit der Prod-DB, nur lesend)
 5. **Feature Flag:** „Punkte-Rangliste“ nur für eine Person aktivieren. Du lernst die Mechanik eines Experiments.

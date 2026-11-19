@@ -3,7 +3,7 @@
 > **Für Claude:** Lies diese Datei zu Beginn jeder Sitzung. Setze beim nächsten offenen Schritt an. Aktualisiere sie am Ende jeder Sitzung (Checkboxen, „Aktueller Stand“, Lernjournal) und committe sie.
 
 ## Aktueller Stand
-- **Aktuelles Modul:** 5 – QA & Prod + CD abgeschlossen (Plan `P-002`, PR #18 bis #23 und PR E). Als Nächstes Modul 6 (DDD).
+- **Aktuelles Modul:** 5 – QA & Prod + CD abgeschlossen (Plan `P-002`, PR #18 bis #23 und PR E). Als Nächstes Modul 6 (DDD-Lite).
 - **Nächster Schritt:** Modul 6: Event Storming (gern mit der Familie), Glossar `docs/glossar.md`, Kontext-Karte, dann `specs/S-001` zum Review. Kein Code vor Spec und Plan.
 - **Offene Entscheidungen:** Basismessung für den Zielwert 80 % (vier Wochen Aufgaben notieren?), Bestätigung bei verspäteter Bestätigung, PIN-Login für Kinder. Technisch: detekt läuft als Alpha (`2.0.0-alpha.6`), restliche Actions in `ci.yml` per Commit-SHA pinnen (neue Workflows sind schon gepinnt), Migrations-Hook braucht eine echte Migration (Modul 9), **Fork-PR-Freigabe** auf `all_external_contributors` setzen (Befehl in `docs/betrieb.md`, noch nicht gesetzt), Prod im WLAN/iPhone erreichbar machen (`APP_BIND=0.0.0.0`), Runner später als Dauerdienst, alte Images aufräumen.
 - **Blocker:** –
@@ -35,7 +35,7 @@
 - [x] **3 – Agent-Grundausstattung:** CLAUDE.md ausgebaut · Hooks (PreToolUse, PostToolUse, Stop, SessionStart live belegt; Migrations-Hook nur per Handtest, echter Test ab Modul 9) · `docs/coding-regeln.md` · Linter (ktlint, detekt, ESLint, Prettier) konfiguriert
 - [x] **4 – Walking Skeleton:** `/api/health` mit Test · Postgres · React-Seite · Dockerfile · compose.yml · CI grün · Branch Protection mit Pflicht-Checks (Plan `P-001`, PR #13 bis #16)
 - [x] **5 – QA & Prod + CD:** Self-hosted Runner · `fd-qa` / `fd-prod` · Prod-Freigabe · Rollback geübt (Plan `P-002`, PR #18 bis #23 und PR E)
-- [ ] **6 – DDD:** Event Storming · Glossar · Kontext-Karte · `specs/S-001` reviewt
+- [ ] **6 – DDD-Lite:** Event Storming · Glossar · Kontext-Karte · `specs/S-001` reviewt
 - [ ] **7 – Code beurteilen:** Review-Checkliste angewendet · Fehler-PR (3 von 3 Fehlern gefunden?)
 - [ ] **8 – Feature 1 (TDD):** Testliste 1–8 · Abdeckung von `domain/` ≥ 90 % · läuft auf QA und Prod
 - [ ] **9 – Postgres:** Flyway · Constraints · Index + `EXPLAIN` · Backup-Restore-Test

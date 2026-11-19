@@ -20,9 +20,8 @@ Kotlin + Spring Boot (Gradle) · TypeScript + React + Vite (npm) · PostgreSQL 1
 - Nummerierung: Jeder Artefakttyp hat ein Präfix und zählt für sich: `I-001` (Intent), `S-001` (Spec), `P-001` (Plan), `ADR-0001` (ADR, vierstellig). Dateiname z. B. `plans/P-001-walking-skeleton.md`. Die Nummer sagt nichts über Zusammengehörigkeit. Die Beziehung steht im Feld „Basiert auf“ im Dokument.
 - Branch-Namen nennen die Phase: `intent/…`, `spec/…`, `plan/…`, `adr/…` für die Artefakte (z. B. `plan/p-001-walking-skeleton`), `feature/…` für Funktionen (nicht `feat/`), `fix/…` für Fehlerbehebungen, `chore/…` für Aufräumarbeiten, `docs/…` nur für sonstige Dokumentation (Fortschritt, Interviews, Wettbewerb). Commit-Nachrichten bleiben bei Conventional Commits (`feat:`, `docs:` …), das ist eine andere Ebene.
 - TDD: zuerst ein fehlschlagender Test, dann der Code. Tests nie abschwächen, um grün zu werden.
-- DDD-Schichten: `domain/` ist frei von Spring und JPA. Begriffe aus `docs/glossar.md` verwenden.
 - Nie direkt auf `main` pushen. Immer über Branch und PR.
-- Coding-Regeln: `docs/coding-regeln.md`. Jede Regel dort nennt, wer sie prüft.
+- Coding-Regeln: `docs/coding-regeln.md`. Jede Regel dort nennt, wer sie prüft. Vor Code-Entscheidungen zu `domain/`, Begriffen (R3 bis R5) und Berechtigungen (R6, R7) dort nachlesen. Der Ansatz ist DDD-Lite (Begründung in `KURS.md`, Modul 6).
 - Hooks in `.claude/hooks/` (Konfiguration `.claude/settings.json`) setzen Regeln deterministisch durch. Wird eine Aktion blockiert (Exit 2), den Hinweis befolgen, **nie umgehen** (kein Umweg über Bash, kein `--no-verify`). Bei Zweifel den Nutzer fragen.
 - `.env*` und bestehende Dateien in `db/migration/` nie ändern. Neue Migration statt Änderung.
 - Behauptungen aus Konkurrenz- oder Fremdquellen an der Primärquelle prüfen.
