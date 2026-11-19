@@ -1,0 +1,18 @@
+name: Offene Frage
+description: Eine fachliche Frage, die noch entschieden werden muss.
+labels: ["offene-frage"]
+body:
+  - type: textarea
+    id: frage
+    attributes:
+      label: Frage und Möglichkeiten
+    validations:
+      required: true
+  - type: input
+    id: betrifft
+    attributes:
+      label: Betrifft (Link auf Intent, Spec oder Regel)
+  - type: markdown
+    attributes:
+      value: |
+        Ist die Frage entschieden, wird die Entscheidung im Intent (Abschnitt „Entschieden") oder in der Spec festgehalten und dieses Issue mit Verweis darauf geschlossen.

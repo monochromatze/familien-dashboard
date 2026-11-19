@@ -1,0 +1,21 @@
+name: Idee
+description: Eine Idee für nach dem MVP. Noch kein Intent.
+labels: ["idee"]
+body:
+  - type: textarea
+    id: idee
+    attributes:
+      label: Idee
+      description: Was soll möglich sein, und für wen?
+    validations:
+      required: true
+  - type: textarea
+    id: beleg
+    attributes:
+      label: Beleg oder Anlass
+      description: Interview, Beobachtung oder Datenpunkt. Link auf docs/interviews.md, falls vorhanden.
+  - type: input
+    id: intent
+    attributes:
+      label: Intent (leer lassen, bis daraus einer wird)
+      description: Sobald die Idee bearbeitet wird, hier den Intent verlinken.
