@@ -342,17 +342,13 @@ Tag v* ─► Freigabe durch dich (Environment "prod") ─►
 
 **Testpyramide:** viele Unit-Tests für `domain/` (Millisekunden, ohne DB) · einige Integrationstests (Repository gegen Postgres, REST-API) · 1–2 Playwright-E2E-Tests (Happy Path im Browser).
 
-**Testliste für das Aggregat `Aufgabe`** (Entwurf aus den Regeln in `docs/event-storming.md`, wird mit den Akzeptanzkriterien aus `specs/S-001` abgeglichen. Der Agent arbeitet sie in dieser Reihenfolge ab, ein Commit pro grünem Test):
-1. Eine Aufgabe braucht eine Person und eine Frist, sonst Fehler (A1). Eine neue Aufgabe ist `offen`.
-2. Die zugewiesene Person kann `erledigt melden`.
-3. Eine **andere** Person kann das nicht (Fehler, A3).
-4. Ein Elternteil `bestätigt` eine gemeldete Aufgabe.
-5. Eine nicht gemeldete Aufgabe kann nicht bestätigt werden, und ein Kind kann nie bestätigen (A4).
-6. Wer die Aufgabe angelegt hat, kann Person und Beschreibung vor der Meldung `korrigieren`, die Frist nie (A2, A10).
-7. Wer die Aufgabe angelegt hat, kann sie vor der Meldung `zurückziehen`. Danach ist sie nicht mehr bearbeitbar (A7) und zählt in keiner Auswertung (A6).
-8. Ist die Frist verstrichen, ohne dass bestätigt wurde, gilt die Aufgabe als `überfällig` und nicht als erledigt (A5).
+**Woher die Testliste kommt:** Sie entsteht aus den **Akzeptanzkriterien (ACs) in `specs/S-001`**, nicht direkt aus dem Event Storming. Die Kette ist: Event Storming findet die Regeln (`docs/event-storming.md`, A1 bis A10) → die Spec macht daraus prüfbare ACs (Gegeben/Wenn/Dann) → jeder AC wird mindestens ein Test. Die Spec enthält dazu die Liste „Abgedeckte Regeln" ([Vorlage](vorlagen/spec.md)): Jede Regel aus dem Event Storming steht dort bei mindestens einem AC, sonst ist die Spec unvollständig. Ein eigener Test pro Regel kommt nur dazu, wenn ein AC mehrere Regeln bündelt und ein Fehler sonst unklar bliebe.
 
-**Arbeitsweise mit dem Agenten:** „Schreibe **nur** den Test für Punkt 3 und zeige ihn mir.“ → Du prüfst: Beschreibt der Test genau die Regel? → „Jetzt implementieren.“ Ab Punkt 5 darf der Agent mehrere Punkte am Stück machen.
+**Testliste für das Aggregat `Aufgabe`** (entsteht, sobald `S-001` freigegeben ist. Der Agent arbeitet sie in dieser Reihenfolge ab, ein Commit pro grünem Test). *Beispiel für die Form, kein verbindlicher Inhalt:*
+1. AC „Gegeben eine offene Aufgabe für Anna, wenn Ben sie als erledigt melden will, dann wird das abgelehnt." → Test `andere_person_kann_nicht_melden` (Regel A3)
+2. AC „Gegeben eine gemeldete Aufgabe, wenn ein Kind sie bestätigen will, dann wird das abgelehnt." → Test `kind_kann_nicht_bestaetigen` (Regel A4)
+
+**Arbeitsweise mit dem Agenten:** „Schreibe **nur** den Test für Punkt 1 und zeige ihn mir.“ → Du prüfst: Beschreibt der Test genau das Akzeptanzkriterium? → „Jetzt implementieren.“ Ab dem fünften Punkt darf der Agent mehrere Punkte am Stück machen.
 
 ✅ Ein Kind hakt auf QA ab, ein Elternteil bestätigt. Die Abdeckung von `domain/` liegt bei mindestens 90 % (Jacoco-Report).
 
